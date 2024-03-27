@@ -3,6 +3,7 @@ package com.gkm.rickmorty.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -189,7 +190,8 @@ fun CustomSearchBar(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .focusRequester(
                         focusRequester = requester
                     )
@@ -201,7 +203,8 @@ fun CustomSearchBar(
                         }) {
                             Icon(
                                 imageVector = Icons.Default.Clear, contentDescription = "clear Search",
-                                modifier = Modifier.padding(end = 8.dp)
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
                                     .size(20.dp)
                             )
                         }
@@ -225,4 +228,31 @@ fun CustomSearchBar(
 
         requester.requestFocus()
     }
+}
+
+@Composable
+fun SearchTopBar(
+    tittle:@Composable () -> Unit,
+    showImage:Boolean = false,
+){
+    Box(modifier = Modifier.fillMaxWidth()){
+        Card(
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(alignment = Alignment.BottomEnd),
+            elevation = CardDefaults.cardElevation(8.dp),
+            colors = CardDefaults.cardColors(Color.White)
+        ) {
+            Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start){
+                if(showImage){
+                    Icon(imageVector = Icons.Default.Search, contentDescription = "search")
+                }
+                tittle()
+            }
+
+        }
+    }
+
+
 }

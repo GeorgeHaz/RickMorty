@@ -36,6 +36,8 @@ import com.gkm.rickmorty.viewModel.CharacterViewModel
 @Composable
 fun CharacterView(navController: NavController, viewModel: CharacterViewModel) {
 
+    val character by viewModel.character.collectAsState()
+
     Scaffold(
         topBar = {
             MainTopBar(
@@ -59,7 +61,7 @@ fun CharacterView(navController: NavController, viewModel: CharacterViewModel) {
             )
         }
     ) {
-        BodyCharacter(navController = navController, paddingValues = it, viewModel = viewModel)
+        BodyCharacter(navController = navController, paddingValues = it, character)
     }
 }
 
@@ -67,15 +69,14 @@ fun CharacterView(navController: NavController, viewModel: CharacterViewModel) {
 fun BodyCharacter(
     navController: NavController,
     paddingValues: PaddingValues,
-    viewModel: CharacterViewModel,
+    parameter:List<CharacterResults>,
 ) {
-    val character by viewModel.character.collectAsState()
 
     LazyColumn(
         modifier = Modifier
             .padding(paddingValues)
     ) {
-        items(character) { item ->
+        items(parameter) { item ->
             CardCharacter(
                 characterResults = item
             ) {

@@ -26,8 +26,12 @@ class CharacterViewModel @Inject constructor(
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
 
+    private val _filteredCharacters = MutableStateFlow<List<CharacterResults>>(emptyList())
+    val filteredCharacters = _filteredCharacters
+
     init {
         fetchCharacter()
+        searchCharacters("")
     }
 
     private fun fetchCharacter() {
@@ -37,5 +41,22 @@ class CharacterViewModel @Inject constructor(
                 _character.value = result ?: emptyList()
             }
         }
+    }
+
+    private fun searchCharacters(searchText:String){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                val filteredCharacters = character.value.filter {
+                    it.name.contains(searchText, ignoreCase = true) ||
+                            it.status.contains(searchText, ignoreCase = true)
+                }
+                _filteredCharacters.value = filteredCharacters
+            }
+        }
+    }
+
+    fun onSearchTextChange(characterText:String){
+        _searchCharacter.value = characterText
+        searchCharacters(_searchCharacter.value)
     }
 }

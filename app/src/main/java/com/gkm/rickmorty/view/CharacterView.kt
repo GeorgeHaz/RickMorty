@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -19,8 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
@@ -28,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.gkm.rickmorty.components.MainTopBar
 import com.gkm.rickmorty.model.CharacterResults
@@ -36,7 +35,8 @@ import com.gkm.rickmorty.viewModel.CharacterViewModel
 @Composable
 fun CharacterView(navController: NavController, viewModel: CharacterViewModel) {
 
-    val character by viewModel.character.collectAsState()
+    //val character by viewModel.character.collectAsState()
+    val characterPage = viewModel._characterPage.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
@@ -61,7 +61,7 @@ fun CharacterView(navController: NavController, viewModel: CharacterViewModel) {
             )
         }
     ) {
-        BodyCharacter(navController = navController, paddingValues = it, character)
+        BodyCharacter(navController = navController, paddingValues = it, characterPage)
     }
 }
 
@@ -69,18 +69,22 @@ fun CharacterView(navController: NavController, viewModel: CharacterViewModel) {
 fun BodyCharacter(
     navController: NavController,
     paddingValues: PaddingValues,
-    parameter:List<CharacterResults>,
+    parameter:LazyPagingItems<CharacterResults>
+    //parameter:List<CharacterResults>,
 ) {
 
     LazyColumn(
         modifier = Modifier
             .padding(paddingValues)
     ) {
-        items(parameter) { item ->
-            CardCharacter(
-                characterResults = item
-            ) {
-                navController.navigate(route = "DetailsView")
+        items(parameter.itemCount) { index ->
+            val item = parameter[index]
+            if(item != null){
+                CardCharacter(
+                    characterResults = item
+                ) {
+                    navController.navigate(route = "DetailsView")
+                }
             }
         }
     }

@@ -1,24 +1,6 @@
 package com.gkm.rickmorty.view
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
-import com.gkm.rickmorty.components.SearchTopBar
-import com.gkm.rickmorty.viewModel.CharacterViewModel
-
-@Composable
+/*@Composable
 fun SearchCharacters(viewModel: CharacterViewModel, navController: NavController) {
     val searchCharacter by viewModel.searchCharacter.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
@@ -69,7 +51,7 @@ fun SearchCharacters(viewModel: CharacterViewModel, navController: NavController
             )
         }
     }
-}
+}*/
 
 //SearchBar(
 //                query = query,

@@ -2,6 +2,10 @@ package com.gkm.rickmorty.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import com.gkm.rickmorty.data.RickAndMortyDataSource
 import com.gkm.rickmorty.model.CharacterResults
 import com.gkm.rickmorty.repository.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +37,10 @@ class CharacterViewModel @Inject constructor(
         fetchCharacter()
         searchCharacters("")
     }
+
+    val _characterPage = Pager(PagingConfig(pageSize = 10)){
+        RickAndMortyDataSource(repository)
+    }.flow.cachedIn(viewModelScope)
 
     private fun fetchCharacter() {
         viewModelScope.launch {

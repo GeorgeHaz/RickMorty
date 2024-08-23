@@ -6,7 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.gkm.rickmorty.data.RickAndMortyDataSource
-import com.gkm.rickmorty.model.CharacterResults
+import com.gkm.rickmorty.model.character.CharacterResults
 import com.gkm.rickmorty.repository.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

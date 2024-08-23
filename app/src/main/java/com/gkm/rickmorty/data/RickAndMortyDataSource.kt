@@ -2,7 +2,7 @@ package com.gkm.rickmorty.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.gkm.rickmorty.model.CharacterResults
+import com.gkm.rickmorty.model.character.CharacterResults
 import com.gkm.rickmorty.repository.CharacterRepository
 
 class RickAndMortyDataSource(

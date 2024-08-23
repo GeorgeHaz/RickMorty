@@ -1,4 +1,4 @@
-package com.gkm.rickmorty.model
+package com.gkm.rickmorty.model.character
 
 import com.google.gson.annotations.SerializedName
 

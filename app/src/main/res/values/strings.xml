@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">RickMorty</string>
+    <!-- Title -->
+    <string name="home">Home</string>
+    <string name="character">Character</string>
+    <string name="episode">Episode</string>
+    <string name="location">Location</string>
+    <!-- Card -->
     <string name="last_location">Last known location:</string>
     <string name="first_location">First seen in:</string>
     <string name="origin">Origin:</string>
+
 </resources>

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -84,8 +85,9 @@ fun BodyHome(navController: NavController, paddingValues: PaddingValues) {
     ) {
         navigateList.forEach {
             ButtonNav(
-                tittle = it.name,
-                clickNav = { navController.navigate(it.route) },
+                tittle = stringResource(id =it.name),
+                clickNav = {
+                    navController.navigate(it.route) },
                 modifier = Modifier
                     .width(200.dp)
             )

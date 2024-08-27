@@ -7,21 +7,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,12 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -117,25 +110,25 @@ fun CardCharacter(
     Card(
         elevation = CardDefaults.cardElevation(5.dp),
         modifier = modifier
+            .fillMaxWidth()
             .clickable {
                 onClick()
-            }
-            .height(150.dp),
+            },
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.onTertiary)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
             MainImage(
                 characters = characterResults,
                 modifier = Modifier
-                    .weight(0.5f)
+                    .weight(1f)
             )
             MainDescription(
                 characters = characterResults,
                 modifier = Modifier
-                    .weight(0.8f))
+                    .weight(1.5f))
         }
 
     }
@@ -144,21 +137,18 @@ fun CardCharacter(
 @Composable
 fun MainImage(
     characters: CharacterResults,
-    modifier: Modifier = Modifier) {
-    val images = rememberAsyncImagePainter(model = characters.image)
+    modifier: Modifier = Modifier)
+{
+    val images = rememberAsyncImagePainter(
+        model = characters.image)
     Box(
         modifier = modifier
-            .width(200.dp)
-            .fillMaxHeight()
+            .fillMaxWidth()
+            .background(color = Color.Gray)
     ) {
         Image(
             painter = images,
             contentDescription = characters.name,
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier
-                .fillMaxHeight()
-                .background(color = Color.Blue)
-                .fillMaxWidth()
         )
     }
 }
@@ -170,13 +160,13 @@ fun MainDescription(
 ) {
     Box(
         modifier = modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
-            .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
+            .fillMaxSize()
+            .padding(start = 8.dp, top = 10.dp, bottom = 10.dp)
     ){
         Column(
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier
+                .fillMaxSize()
         ) {
             Text(
                 text = characters.name,
@@ -189,9 +179,11 @@ fun MainDescription(
                         .size(6.dp),
                     contentDescription = "") {
                     drawCircle(
-                        color = if(characters.status == "Alive")
-                            Color.Green else if(characters.status == "Dead")
-                                Color.Red else Color.Gray,
+                        color = when (characters.status) {
+                            "Alive" -> Color.Green
+                            "Dead" -> Color.Red
+                            else -> Color.Gray
+                        },
                         radius = size.minDimension / 2
                     )
                 }
@@ -208,8 +200,10 @@ fun MainDescription(
                     style = MaterialTheme.typography.labelSmall,
                 )
             }
-            Spacer(modifier = Modifier.size(2.dp))
-            Box(){
+            Spacer(modifier = Modifier
+                .size(4.dp)
+                .fillMaxWidth())
+            Box{
                 Column {
                     Text(
                         text = stringResource(id = R.string.last_location),
@@ -222,7 +216,7 @@ fun MainDescription(
                 }
             }
             Spacer(modifier = Modifier.size(2.dp))
-            Box(){
+            Box{
                 Column {
                     Text(
                         text = stringResource(id = R.string.first_location),
@@ -237,7 +231,7 @@ fun MainDescription(
     }
 }
 
-@Preview(heightDp = 350, widthDp = 550)
+@Preview
 @Composable
 fun CardPreview() {
     CardCharacter(
@@ -250,11 +244,12 @@ fun CardPreview() {
             "Male",
             Origin("Earth", "Planet"),
             Location("Earth", "Planet"),
-            "",
+            "https://rickandmortyapi.com/api/character/avatar/227.jpeg",
             listOf(),
             "2017-11-04T18:48:46.250Z",
             "2017-11-04T18:48:46.250Z"
         ),
     ) {
+
     }
 }

@@ -1,6 +1,7 @@
 package com.gkm.rickmorty.navigate
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -13,7 +14,9 @@ import com.gkm.rickmorty.view.LocationView
 import com.gkm.rickmorty.viewModel.CharacterViewModel
 
 @Composable
-fun NavManager(viewModel: CharacterViewModel) {
+fun NavManager(
+    viewModel: CharacterViewModel,
+    modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
     NavHost(
@@ -21,7 +24,7 @@ fun NavManager(viewModel: CharacterViewModel) {
         startDestination = RouteNav.Home.route,
         builder = {
             composable(RouteNav.Home.route) {
-                HomeView(navController)
+                HomeView(navController, modifier)
             }
             composable(RouteNav.Character.route) {
                 CharacterView(navController, viewModel)

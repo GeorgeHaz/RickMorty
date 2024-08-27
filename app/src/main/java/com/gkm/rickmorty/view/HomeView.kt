@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,8 +34,10 @@ import com.gkm.rickmorty.components.MainTopBar
 import com.gkm.rickmorty.navigate.RouteNav
 
 @Composable
-fun HomeView(navController: NavController) {
-    Scaffold(
+fun HomeView(
+    navController: NavController,
+    modifier: Modifier = Modifier) {
+    /*Scaffold(
         topBar = {
             MainTopBar(
                 Title = {
@@ -51,12 +54,13 @@ fun HomeView(navController: NavController) {
             )
         }
     ) {
-        BodyHome(navController = navController, paddingValues = it)
-    }
+
+    }*/
+    BodyHome(navController = navController, modifier = modifier)
 }
 
 @Composable
-fun BodyHome(navController: NavController, paddingValues: PaddingValues) {
+fun BodyHome(navController: NavController, modifier: Modifier) {
     val navigateList = listOf(
         RouteNav.Character,
         RouteNav.Episode,
@@ -64,9 +68,8 @@ fun BodyHome(navController: NavController, paddingValues: PaddingValues) {
     )
     val backImage = ImageBitmap.imageResource(R.drawable.rick_morty_home)
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(paddingValues)
     ) {
         Image(
             bitmap = backImage,
@@ -76,13 +79,20 @@ fun BodyHome(navController: NavController, paddingValues: PaddingValues) {
             contentScale = ContentScale.FillBounds
         )
     }
-    Column(
+    Image(
+        painter = painterResource(id = R.drawable.rickmorty),
+        contentDescription = "logo",
+        alignment = Alignment.TopCenter,
         modifier = Modifier
-            .padding(paddingValues)
+            .fillMaxWidth()
+            .padding(vertical = 25.dp, horizontal = 5.dp))
+    Column(
+        modifier = modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+
         navigateList.forEach {
             ButtonNav(
                 tittle = stringResource(id =it.name),

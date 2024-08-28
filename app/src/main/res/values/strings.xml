@@ -9,5 +9,7 @@
     <string name="last_location">Last known location:</string>
     <string name="first_location">First seen in:</string>
     <string name="origin">Origin:</string>
+    <!-- Options -->
+    <string name="error_loading">Error Loading</string>
 
 </resources>

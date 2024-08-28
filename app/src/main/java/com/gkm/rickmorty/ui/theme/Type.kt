@@ -70,7 +70,7 @@ val myTypography = Typography(
         fontFamily = Jost,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
-        lineHeight = 16.sp
+        lineHeight = 14.sp
     ),
     titleLarge = TextStyle(
         fontFamily = Jost,
@@ -87,7 +87,7 @@ val myTypography = Typography(
     titleSmall = TextStyle(
         fontFamily = Jost,
         fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
-        lineHeight = 32.sp
+        fontSize = 16.sp,
+        lineHeight = 22.sp
     ),
 )

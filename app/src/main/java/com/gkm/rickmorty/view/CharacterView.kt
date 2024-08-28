@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,10 +31,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.gkm.rickmorty.R
+import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.MainTopBar
 import com.gkm.rickmorty.model.character.CharacterResults
 import com.gkm.rickmorty.model.character.Location
@@ -69,10 +72,15 @@ fun CharacterView(
             )
         }
     ) {
-        BodyCharacter(
-            navController = navController,
-            modifier = Modifier.padding(it),
-            parameter = characterPage)
+        Column (
+            modifier = Modifier
+                .padding(it)
+                .fillMaxWidth()
+        ){
+            BodyCharacter(
+                navController = navController,
+                parameter = characterPage)
+        }
     }
 }
 
@@ -92,9 +100,29 @@ fun BodyCharacter(
                 CardCharacter(
                     characterResults = item,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(8.dp)
                 ) {
                     navController.navigate(route = "DetailsView")
+                }
+            }
+        }
+        when(parameter.loadState.append){
+            is LoadState.NotLoading -> Unit
+            LoadState.Loading -> {
+                item{
+                    Column(
+                        modifier = Modifier
+                            .fillParentMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Loader()
+                    }
+                }
+            }
+            is LoadState.Error -> {
+                item {
+                    Text(text = "Error al cargar")
                 }
             }
         }
@@ -123,7 +151,7 @@ fun CardCharacter(
             MainImage(
                 characters = characterResults,
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(0.8f)
             )
             MainDescription(
                 characters = characterResults,
@@ -145,10 +173,14 @@ fun MainImage(
         modifier = modifier
             .fillMaxWidth()
             .background(color = Color.Gray)
+            .aspectRatio(1f)
     ) {
         Image(
             painter = images,
             contentDescription = characters.name,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
         )
     }
 }
@@ -161,7 +193,7 @@ fun MainDescription(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(start = 8.dp, top = 10.dp, bottom = 10.dp)
+            .padding(start = 8.dp, top = 3.dp, bottom = 3.dp)
     ){
         Column(
             verticalArrangement = Arrangement.Center,
@@ -207,8 +239,8 @@ fun MainDescription(
                 Column {
                     Text(
                         text = stringResource(id = R.string.last_location),
-                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f),
+                        style = MaterialTheme.typography.labelSmall,
                     )
                     Text(
                         text = characters.location.name,
@@ -220,7 +252,7 @@ fun MainDescription(
                 Column {
                     Text(
                         text = stringResource(id = R.string.first_location),
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f))
                     Text(
                         text = characters.gender,

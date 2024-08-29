@@ -22,8 +22,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -38,6 +43,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.ImageLoader
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
 import com.gkm.rickmorty.R
@@ -180,12 +186,28 @@ fun MainImage(
     characters: CharacterResults,
     modifier: Modifier = Modifier
 ) {
+    var isLoading by remember {
+        mutableStateOf(true)
+    }
     val images = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
+        ImageRequest.Builder(LocalContext.current)
             .data(characters.image)
-            .crossfade(true)
-            .build(),
-        contentScale = ContentScale.Crop,
+            .apply(
+                block = fun ImageRequest.Builder.(){
+                    listener(
+                        onStart = {
+                            isLoading = true
+                        },
+                        onSuccess = { _, _ ->
+                            isLoading = false
+                        },
+                        onError = { _, _ ->
+                            isLoading = false
+                        }
+                    )
+                }
+            )
+            .build()
     )
     Box(
         modifier = modifier
@@ -194,10 +216,17 @@ fun MainImage(
     ) {
         Image(
             painter = images,
-            contentDescription = characters.name,
+            alignment = Alignment.Center,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
+                .alpha(
+                    if (isLoading) 0f else 1f)
         )
+            if(isLoading){
+                Loader()
+            }
     }
 }
 
@@ -210,7 +239,7 @@ fun MainDescription(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(start = 8.dp, top = 3.dp, bottom = 3.dp)
+            .padding(8.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,

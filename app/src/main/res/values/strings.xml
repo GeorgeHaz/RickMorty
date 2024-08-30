@@ -11,5 +11,6 @@
     <string name="origin">Origin:</string>
     <!-- Options -->
     <string name="error_loading">Error Loading</string>
+    <string name="search_character">Search Character</string>
 
 </resources>

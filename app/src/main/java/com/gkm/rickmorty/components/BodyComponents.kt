@@ -13,7 +13,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -21,13 +24,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,23 +54,25 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gkm.rickmorty.R
 
 @Composable
 fun MainTopBar(
-    Title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    title: @Composable () -> Unit,
     showBackButton: Boolean = false,
     showSearchButton: Boolean = false,
     showImage: Boolean = false,
     onClickBackButton: () -> Unit,
     onClickAction: () -> Unit,
-    modifier: Modifier,
 ) {
     Box(
         modifier = modifier
@@ -82,12 +88,12 @@ fun MainTopBar(
                             onClick = { onClickBackButton() }
                         ) {
                             Icon(
-                                imageVector = Icons.Default.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "back"
                             )
                         }
                     }
-                    Title()
+                    title()
                 }
             }
             Box(
@@ -98,13 +104,13 @@ fun MainTopBar(
                     Image(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.Center)
-                            .padding(vertical = 20.dp),
+                            .align(Alignment.Center),
                         painter = painterResource(id = R.drawable.rickmorty),
                         contentDescription = "Logo"
                     )
                 }
             }
+            Spacer(Modifier.size(8.dp))
             if (showSearchButton) {
                 Box(
                     modifier = Modifier
@@ -134,7 +140,7 @@ fun MainTopBar(
                                     tint = Color.Black
                                 )
                                 Text(
-                                    text = "Buscar personajes",
+                                    text = stringResource(id = R.string.search_character),
                                     fontStyle = FontStyle.Italic,
                                     textAlign = TextAlign.Center,
                                     color = Color.Black
@@ -154,19 +160,16 @@ fun ButtonNav(
     clickNav: () -> Unit,
     modifier: Modifier,
 ) {
-    OutlinedButton(
+    ElevatedButton(
         onClick = { clickNav() },
         modifier = modifier,
-        border = BorderStroke(
-            width = 3.dp,
-            color = MaterialTheme.colorScheme.tertiary
-        ),
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer),
         shape = RoundedCornerShape(10.dp)
     ) {
         Text(
             text = tittle,
-            color = MaterialTheme.colorScheme.onTertiary,
-            fontWeight = FontWeight.ExtraBold
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.scrim
         )
     }
 }
@@ -188,7 +191,7 @@ fun CustomSearchBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = { navigateUp() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back")
+                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "back")
             }
             TextField(
                 value = value,

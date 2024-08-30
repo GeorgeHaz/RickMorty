@@ -1,5 +1,6 @@
 package com.gkm.rickmorty.view
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -11,9 +12,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,8 +37,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -58,11 +65,18 @@ fun CharacterView(
         viewModel.fetchCharacter()
     }
     val characterPage = viewModel._characterPage.collectAsLazyPagingItems()
+    val scrollState = rememberLazyListState()
+    val toolbarHeight = animateDpAsState(
+        targetValue = if (scrollState.firstVisibleItemIndex > 0) 56.dp else 200.dp, label = ""
+    )
+    val toolbarOffsetHeightPx = with(LocalDensity.current) {
+        -(toolbarHeight.value - 56.dp).toPx()
+    }
 
     Scaffold(
         topBar = {
             MainTopBar(
-                Title = {
+                title = {
                     Text(
                         text = stringResource(id = R.string.character),
                         style = MaterialTheme.typography.displaySmall
@@ -78,67 +92,55 @@ fun CharacterView(
                 },
                 showImage = true,
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .height(toolbarHeight.value)
+                    .offset {
+                        IntOffset(
+                            x = 0, y = toolbarOffsetHeightPx.toInt()
+                        )
+                    },
             )
         }
     ) {
-        Column(
+        LazyColumn(
+            state = scrollState,
             modifier = Modifier
                 .padding(it)
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
-            BodyCharacter(
-                navController = navController,
-                parameter = characterPage
-            )
-        }
-    }
-}
-
-@Composable
-fun BodyCharacter(
-    navController: NavController,
-    modifier: Modifier = Modifier,
-    parameter: LazyPagingItems<CharacterResults>
-) {
-    val scrollState = rememberScrollState()
-
-    LazyColumn(
-        state = scrollState,
-        modifier = modifier
-            .fillMaxSize()
-    ) {
-        items(parameter.itemCount) { index ->
-            val item = parameter[index]
-            if (item != null) {
-                CardCharacter(
-                    characterResults = item,
-                    modifier = Modifier
-                        .padding(8.dp)
-                ) {
-                    navController.navigate(route = "DetailsView")
-                }
-            }
-        }
-        when (parameter.loadState.append) {
-            is LoadState.NotLoading -> Unit
-            LoadState.Loading -> {
-                item {
-                    Column(
+            items(characterPage.itemCount) { index ->
+                val item = characterPage[index]
+                if (item != null) {
+                    CardCharacter(
+                        characterResults = item,
                         modifier = Modifier
-                            .fillParentMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                            .padding(8.dp)
                     ) {
-                        Loader()
+                        navController.navigate(route = "DetailsView")
                     }
                 }
             }
+            when (characterPage.loadState.append) {
+                is LoadState.NotLoading -> Unit
+                LoadState.Loading -> {
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillParentMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Loader()
+                        }
+                    }
+                }
 
-            is LoadState.Error -> {
-                item {
-                    Text(
-                        text = stringResource(id = R.string.error_loading)
-                    )
+                is LoadState.Error -> {
+                    item {
+                        Text(
+                            text = stringResource(id = R.string.error_loading)
+                        )
+                    }
                 }
             }
         }
@@ -191,7 +193,7 @@ fun MainImage(
         ImageRequest.Builder(LocalContext.current)
             .data(characters.image)
             .apply(
-                block = fun ImageRequest.Builder.(){
+                block = fun ImageRequest.Builder.() {
                     listener(
                         onStart = {
                             isLoading = true
@@ -207,7 +209,8 @@ fun MainImage(
             )
             .build()
     )
-    Box(contentAlignment = Alignment.Center,
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
@@ -220,11 +223,12 @@ fun MainImage(
             modifier = Modifier
                 .fillMaxSize()
                 .alpha(
-                    if (isLoading) 0f else 1f)
+                    if (isLoading) 0f else 1f
+                )
         )
-            if(isLoading){
-                Loader()
-            }
+        if (isLoading) {
+            Loader()
+        }
     }
 }
 

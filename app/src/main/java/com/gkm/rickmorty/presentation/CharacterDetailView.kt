@@ -1,4 +1,4 @@
-package com.gkm.rickmorty.view
+package com.gkm.rickmorty.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

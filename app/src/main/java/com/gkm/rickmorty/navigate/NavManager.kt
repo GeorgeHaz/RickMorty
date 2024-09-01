@@ -5,11 +5,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.gkm.rickmorty.view.CharacterDetailView
-import com.gkm.rickmorty.view.CharacterView
-import com.gkm.rickmorty.view.EpisodeView
-import com.gkm.rickmorty.view.HomeView
-import com.gkm.rickmorty.view.LocationView
+import com.gkm.rickmorty.presentation.CharacterDetailView
+import com.gkm.rickmorty.presentation.CharacterView
+import com.gkm.rickmorty.presentation.EpisodeView
+import com.gkm.rickmorty.presentation.HomeView
+import com.gkm.rickmorty.presentation.LocationView
 import com.gkm.rickmorty.viewModel.CharacterViewModel
 
 @Composable

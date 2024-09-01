@@ -2,34 +2,33 @@ package com.gkm.rickmorty.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.gkm.rickmorty.model.character.CharacterResults
-import com.gkm.rickmorty.repository.CharacterRepository
+import com.gkm.rickmorty.presentation.model.character.CharacterModel
+import okio.IOException
+import javax.inject.Inject
 
-class RickAndMortyDataSource(
-    private val repository: CharacterRepository
-):PagingSource<Int, CharacterResults>() {
-
-    override fun getRefreshKey(state: PagingState<Int, CharacterResults>): Int? {
-        return state.anchorPosition?.let{position ->
-            state.closestPageToPosition(position)?.prevKey?.plus(1)
-                ?: state.closestPageToPosition(position)?.nextKey?.minus(1)
-        }
+class RickAndMortyDataSource @Inject constructor(
+    private val apiRickMorty: ApiRickMorty):PagingSource<Int, CharacterModel>() {
+    override fun getRefreshKey(state: PagingState<Int, CharacterModel>): Int? {
+        return  state.anchorPosition
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CharacterResults> {
-        return  try{
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CharacterModel> {
+        return try{
             val page = params.key ?: 1
-            val response = repository.getCharacterPage(page, 10)
+            val response = apiRickMorty.getCharacterPage(page)
             val data = response.results
 
+            val prevKey = if(page>0) page - 1 else null
+            val nextKey = if(response.info.next != null) page + 1 else null
+
             LoadResult.Page(
-                data = data,
-                prevKey = null,
-                nextKey = if(response.results.isNotEmpty()) page + 1 else null
+                data = data
+                    .map {it.toPresentation()},
+                prevKey = prevKey,
+                nextKey = nextKey
             )
-        }catch (e:Exception){
+        }catch (e:IOException){
             LoadResult.Error(e)
         }
     }
-
 }

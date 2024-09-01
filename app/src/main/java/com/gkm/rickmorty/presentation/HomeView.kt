@@ -1,4 +1,4 @@
-package com.gkm.rickmorty.view
+package com.gkm.rickmorty.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +50,7 @@ fun BodyHome(navController: NavController, modifier: Modifier) {
             contentDescription = "backImage",
             modifier = Modifier
                 .fillMaxSize(),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.Crop
         )
     }
     Image(

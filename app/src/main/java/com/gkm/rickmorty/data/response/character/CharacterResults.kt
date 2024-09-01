@@ -1,5 +1,6 @@
-package com.gkm.rickmorty.model.character
+package com.gkm.rickmorty.data.response.character
 
+import com.gkm.rickmorty.presentation.model.character.CharacterModel
 import com.google.gson.annotations.SerializedName
 
 data class CharacterResults(
@@ -9,19 +10,21 @@ data class CharacterResults(
     @SerializedName("species") val species:String,
     @SerializedName("type") val type:String,
     @SerializedName("gender") val gender:String,
-    @SerializedName("origin") val origin: Origin,
-    @SerializedName("location") val location: Location,
+    @SerializedName("origin") val origin: CharacterOrigin,
+    @SerializedName("location") val location: CharacterLocation,
     @SerializedName("image") val image:String,
     @SerializedName("episode") val episode:List<String>,
     @SerializedName("url") val url:String,
     @SerializedName("created") val created:String
-)
-data class Origin(
-    @SerializedName("name") val name:String,
-    @SerializedName("url") val url:String
-)
-
-data class Location(
-    val name: String,
-    val url: String
-)
+){
+    fun toPresentation():CharacterModel{
+        return CharacterModel(
+            name = name,
+            status = status,
+            species = species,
+            gender = gender,
+            location = location.name,
+            image = image
+        )
+    }
+}

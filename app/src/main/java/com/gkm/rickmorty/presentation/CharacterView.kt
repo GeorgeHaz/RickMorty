@@ -1,6 +1,5 @@
-package com.gkm.rickmorty.view
+package com.gkm.rickmorty.presentation
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -12,21 +11,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,41 +30,30 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.gkm.rickmorty.R
 import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.MainTopBar
-import com.gkm.rickmorty.model.character.CharacterResults
-import com.gkm.rickmorty.model.character.Location
-import com.gkm.rickmorty.model.character.Origin
+import com.gkm.rickmorty.presentation.model.character.CharacterModel
 import com.gkm.rickmorty.viewModel.CharacterViewModel
 
 @Composable
 fun CharacterView(
     navController: NavController,
-    viewModel: CharacterViewModel
+    viewModel: CharacterViewModel,
 ) {
-    LaunchedEffect(key1 = Unit) {
-        viewModel.fetchCharacter()
-    }
-    val characterPage = viewModel._characterPage.collectAsLazyPagingItems()
-    val scrollState = rememberLazyListState()
-    val toolbarHeight = animateDpAsState(
-        targetValue = if (scrollState.firstVisibleItemIndex > 0) 56.dp else 200.dp, label = ""
-    )
-    val toolbarOffsetHeightPx = with(LocalDensity.current) {
-        -(toolbarHeight.value - 56.dp).toPx()
-    }
+    //LaunchedEffect(key1 = Unit) {
+    //        viewModel.fetchCharacter()
+    //    }
+    val characterPage = viewModel.characters.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
@@ -92,66 +74,79 @@ fun CharacterView(
                 },
                 showImage = true,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(toolbarHeight.value)
-                    .offset {
-                        IntOffset(
-                            x = 0, y = toolbarOffsetHeightPx.toInt()
-                        )
-                    },
+
             )
         }
     ) {
-        LazyColumn(
-            state = scrollState,
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
-        ) {
-            items(characterPage.itemCount) { index ->
-                val item = characterPage[index]
-                if (item != null) {
-                    CardCharacter(
-                        characterResults = item,
-                        modifier = Modifier
-                            .padding(8.dp)
-                    ) {
-                        navController.navigate(route = "DetailsView")
-                    }
+        when {
+            //carga inicial
+            characterPage.loadState.refresh is LoadState.Loading && characterPage.itemCount == 0 -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    Loader()
                 }
             }
-            when (characterPage.loadState.append) {
-                is LoadState.NotLoading -> Unit
-                LoadState.Loading -> {
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .fillParentMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Loader()
+
+            characterPage.loadState.hasError -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.not_internet),
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(it)
+                        .fillMaxSize()
+                ) {
+                    items(characterPage.itemCount) { index ->
+                        characterPage[index]?.let { characterModel ->
+                            CardCharacter(
+                                characterModel = characterModel,
+                                modifier = Modifier
+                                    .padding(8.dp)
+                            ) {
+                                navController.navigate(route = "DetailsView")
+                            }
                         }
                     }
-                }
-
-                is LoadState.Error -> {
-                    item {
-                        Text(
-                            text = stringResource(id = R.string.error_loading)
-                        )
+                    if (characterPage.loadState.append is LoadState.Loading) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Loader()
+                            }
+                        }
                     }
                 }
             }
         }
+
     }
 }
 
 @Composable
 fun CardCharacter(
-    characterResults: CharacterResults,
+    characterModel: CharacterModel,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Card(
         elevation = CardDefaults.cardElevation(5.dp),
@@ -167,12 +162,12 @@ fun CardCharacter(
                 .fillMaxSize()
         ) {
             MainImage(
-                characters = characterResults,
+                characters = characterModel,
                 modifier = Modifier
                     .weight(0.8f)
             )
             MainDescription(
-                characters = characterResults,
+                characters = characterModel,
                 modifier = Modifier
                     .weight(1.5f)
             )
@@ -183,8 +178,8 @@ fun CardCharacter(
 
 @Composable
 fun MainImage(
-    characters: CharacterResults,
-    modifier: Modifier = Modifier
+    characters: CharacterModel,
+    modifier: Modifier = Modifier,
 ) {
     var isLoading by remember {
         mutableStateOf(true)
@@ -235,7 +230,7 @@ fun MainImage(
 
 @Composable
 fun MainDescription(
-    characters: CharacterResults,
+    characters: CharacterModel,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -296,7 +291,7 @@ fun MainDescription(
                         style = MaterialTheme.typography.labelSmall,
                     )
                     Text(
-                        text = characters.location.name,
+                        text = characters.location,
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -323,19 +318,13 @@ fun MainDescription(
 @Composable
 fun CardPreview() {
     CardCharacter(
-        characterResults = CharacterResults(
-            1,
+        characterModel = CharacterModel(
             "Rick Sanchez",
             "Alive",
             "Human",
-            "",
             "Male",
-            Origin("Earth", "Planet"),
-            Location("Earth", "Planet"),
+            "Street House",
             "https://rickandmortyapi.com/api/character/avatar/227.jpeg",
-            listOf(),
-            "2017-11-04T18:48:46.250Z",
-            "2017-11-04T18:48:46.250Z"
         ),
     ) {
 

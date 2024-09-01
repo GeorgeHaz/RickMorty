@@ -1,4 +1,4 @@
-package com.gkm.rickmorty.model.location
+package com.gkm.rickmorty.data.response.location
 
 data class LocationModel(
     val info: LocationInfo,

@@ -1,4 +1,4 @@
-package com.gkm.rickmorty.view
+package com.gkm.rickmorty.presentation
 
 /*@Composable
 fun SearchCharacters(viewModel: CharacterViewModel, navController: NavController) {

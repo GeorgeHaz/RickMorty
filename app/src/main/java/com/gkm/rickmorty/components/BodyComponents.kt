@@ -5,18 +5,16 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -27,16 +25,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -56,11 +55,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gkm.rickmorty.R
 
@@ -159,114 +156,22 @@ fun ButtonNav(
     tittle: String,
     clickNav: () -> Unit,
     modifier: Modifier,
+    color: ButtonColors = ButtonDefaults.buttonColors() ,
 ) {
     ElevatedButton(
         onClick = { clickNav() },
-        modifier = modifier,
-        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer),
-        shape = RoundedCornerShape(10.dp)
+        colors = color,
+        shape = CircleShape,
+        elevation = ButtonDefaults.buttonElevation(1.dp),
+        modifier = modifier
     ) {
         Text(
             text = tittle,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.scrim
-        )
-    }
-}
-
-@Composable
-fun CustomSearchBar(
-    value: String,
-    placeholder: String,
-    navigateUp: () -> Unit,
-    onValueChange: (String) -> Unit,
-) {
-    val focusManager = LocalFocusManager.current
-
-    val requester = remember { FocusRequester() }
-    Column {
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = { navigateUp() }) {
-                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "back")
-            }
-            TextField(
-                value = value,
-                onValueChange = { name ->
-                    onValueChange(name)
-                },
-                placeholder = {
-                    Text(text = placeholder)
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(
-                        focusRequester = requester
-                    )
-                    .background(Color.Transparent),
-                trailingIcon = {
-                    if (value.isNotBlank()) {
-                        IconButton(onClick = {
-                            onValueChange("")
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Clear, contentDescription = "clear Search",
-                                modifier = Modifier
-                                    .padding(end = 8.dp)
-                                    .size(20.dp)
-                            )
-                        }
-                    }
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                    }
-                )
-            )
-        }
-
-        HorizontalDivider(modifier = Modifier.fillMaxWidth())
-    }
-    SideEffect {
-
-        requester.requestFocus()
-    }
-}
-
-@Composable
-fun SearchTopBar(
-    tittle:@Composable () -> Unit,
-    showImage:Boolean = false,
-){
-    Box(modifier = Modifier.fillMaxWidth()){
-        Card(
-            shape = RoundedCornerShape(8.dp),
+            color = MaterialTheme.colorScheme.scrim,
+            textAlign = TextAlign.Center,
             modifier = Modifier
-                .fillMaxWidth()
-                .align(alignment = Alignment.BottomEnd),
-            elevation = CardDefaults.cardElevation(8.dp),
-            colors = CardDefaults.cardColors(Color.White)
-        ) {
-            Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start){
-                if(showImage){
-                    Icon(imageVector = Icons.Default.Search, contentDescription = "search")
-                }
-                tittle()
-            }
-
-        }
+        )
     }
 }
 

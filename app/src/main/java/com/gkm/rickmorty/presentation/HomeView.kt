@@ -27,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.gkm.rickmorty.R
 import com.gkm.rickmorty.components.ButtonNav
 import com.gkm.rickmorty.navigate.RouteNav
+import com.gkm.rickmorty.ui.theme.RickMortyTheme
 
 @Composable
 fun HomeView(
@@ -92,7 +93,7 @@ fun BodyHome(
                             navController.navigate(it.route)
                         },
                         modifier = Modifier
-                            .width(130.dp),
+                            .width(115.dp),
                         color = ButtonDefaults.buttonColors(
                             MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f))
                     )
@@ -106,5 +107,7 @@ fun BodyHome(
 @Preview(showBackground = true)
 @Composable
 fun HomeViewPreview() {
-    HomeView(navController = rememberNavController())
+    RickMortyTheme (darkTheme = true){
+        HomeView(navController = rememberNavController())
+    }
 }

@@ -168,9 +168,9 @@ fun ButtonNav(
         Text(
             text = tittle,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.scrim,
+            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
-            modifier = Modifier
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

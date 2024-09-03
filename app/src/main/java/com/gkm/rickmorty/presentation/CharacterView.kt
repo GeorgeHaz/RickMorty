@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,17 +32,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.gkm.rickmorty.R
+import com.gkm.rickmorty.components.GeneralLoader
 import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.MainTopBar
+import com.gkm.rickmorty.components.NotInternetLoader
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
+import com.gkm.rickmorty.ui.theme.RickMortyTheme
 import com.gkm.rickmorty.viewModel.CharacterViewModel
 
 @Composable
@@ -49,95 +54,92 @@ fun CharacterView(
     navController: NavController,
     viewModel: CharacterViewModel,
 ) {
-    //LaunchedEffect(key1 = Unit) {
-    //        viewModel.fetchCharacter()
-    //    }
     val characterPage = viewModel.characters.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
-            MainTopBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.character),
-                        style = MaterialTheme.typography.displaySmall
-                    )
-                },
-                showBackButton = true,
-                onClickBackButton = {
-                    navController.popBackStack()
-                },
-                showSearchButton = true,
-                onClickAction = {
-                    navController.navigate("SearchBar")
-                },
-                showImage = true,
-                modifier = Modifier
-
-            )
+            HeadCharacter(navController = navController)
         }
     ) {
         when {
-            //carga inicial
+            //start charge
             characterPage.loadState.refresh is LoadState.Loading && characterPage.itemCount == 0 -> {
-                Box(
+                GeneralLoader(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(it),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    Loader()
-                }
+                        .padding(it)
+                )
             }
 
             characterPage.loadState.hasError -> {
-                Box(
+                NotInternetLoader(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(it),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.not_internet),
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                        .padding(it)
+                )
             }
 
             else -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(it)
-                        .fillMaxSize()
-                ) {
-                    items(characterPage.itemCount) { index ->
-                        characterPage[index]?.let { characterModel ->
-                            CardCharacter(
-                                characterModel = characterModel,
-                                modifier = Modifier
-                                    .padding(8.dp)
-                            ) {
-                                navController.navigate(route = "DetailsView")
-                            }
-                        }
-                    }
-                    if (characterPage.loadState.append is LoadState.Loading) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Loader()
-                            }
-                        }
-                    }
-                }
+                BodyCharacter(
+                    modifier = Modifier.padding(it),
+                    characterPage = characterPage,
+                    navController = navController
+                )
             }
         }
 
+    }
+}
+
+@Composable
+fun HeadCharacter(navController: NavController) {
+    MainTopBar(
+        title = {
+            Text(
+                text = stringResource(id = R.string.character),
+                style = MaterialTheme.typography.displaySmall
+            )
+        },
+        showBackButton = true,
+        onClickBackButton = {
+            navController.popBackStack()
+        },
+        showSearchButton = true,
+        onClickAction = {
+            navController.navigate("SearchBar")
+        },
+        showImage = true,
+        modifier = Modifier
+
+    )
+}
+
+@Composable
+fun BodyCharacter(
+    modifier: Modifier = Modifier,
+    characterPage: LazyPagingItems<CharacterModel>,
+    navController: NavController
+) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        items(characterPage.itemCount) { index ->
+            characterPage[index]?.let { characterModel ->
+                CardCharacter(
+                    characterModel = characterModel,
+                    modifier = Modifier
+                        .padding(8.dp)
+                ) {
+                    navController.navigate(route = "DetailsView")
+                }
+            }
+        }
+        if (characterPage.loadState.append is LoadState.Loading) {
+            item {
+                GeneralLoader(modifier = Modifier.fillParentMaxSize())
+            }
+        }
     }
 }
 
@@ -309,6 +311,59 @@ fun MainDescription(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun TopCharacterPreview() {
+    RickMortyTheme (darkTheme = false){
+        Scaffold(
+            topBar = {
+                MainTopBar(
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.character),
+                            style = MaterialTheme.typography.displaySmall
+                        )
+                    },
+                    showBackButton = true,
+                    onClickBackButton = {
+
+                    },
+                    showSearchButton = true,
+                    onClickAction = {
+
+                    },
+                    showImage = true,
+                    modifier = Modifier
+                )
+            }
+        ) {
+            Box(modifier = Modifier
+                .padding(it)
+                .fillMaxSize()){
+                LazyColumn (
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp),
+                ){
+                    items(8){
+                        CardCharacter(characterModel = CharacterModel(
+                            "Rick Sanchez",
+                            "Alive",
+                            "Human",
+                            "Earth",
+                            "Citadel of Ricks",
+                            "https://rickandmortyapi.com/api/character/avatar/1.jpeg"),
+                            modifier = Modifier
+                                .height(150.dp)
+                                .padding(vertical = 5.dp)
+                        ){}
+                    }
+                }
+            }
+
         }
     }
 }

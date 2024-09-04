@@ -15,11 +15,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -49,16 +56,22 @@ import com.gkm.rickmorty.presentation.model.character.CharacterModel
 import com.gkm.rickmorty.ui.theme.RickMortyTheme
 import com.gkm.rickmorty.viewModel.CharacterViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharacterView(
     navController: NavController,
     viewModel: CharacterViewModel,
 ) {
     val characterPage = viewModel.characters.collectAsLazyPagingItems()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            HeadCharacter(navController = navController)
+            HeadCharacter(
+                navController = navController,
+                scrollBehavior = scrollBehavior)
         }
     ) {
         when {
@@ -91,8 +104,13 @@ fun CharacterView(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeadCharacter(navController: NavController) {
+fun HeadCharacter(
+    navController: NavController,
+    scrollBehavior: TopAppBarScrollBehavior
+) {
+
     MainTopBar(
         title = {
             Text(
@@ -100,7 +118,8 @@ fun HeadCharacter(navController: NavController) {
                 style = MaterialTheme.typography.displaySmall
             )
         },
-        showBackButton = true,
+        showButton = true,
+        image = Icons.AutoMirrored.Filled.ArrowBack,
         onClickBackButton = {
             navController.popBackStack()
         },
@@ -109,9 +128,9 @@ fun HeadCharacter(navController: NavController) {
             navController.navigate("SearchBar")
         },
         showImage = true,
-        modifier = Modifier
-
-    )
+        modifier = Modifier,
+        scrollBehavior = scrollBehavior
+        )
 }
 
 @Composable
@@ -315,10 +334,11 @@ fun MainDescription(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TopCharacterPreview() {
-    RickMortyTheme (darkTheme = false){
+    RickMortyTheme(darkTheme = false) {
         Scaffold(
             topBar = {
                 MainTopBar(
@@ -328,7 +348,8 @@ fun TopCharacterPreview() {
                             style = MaterialTheme.typography.displaySmall
                         )
                     },
-                    showBackButton = true,
+                    showButton = true,
+                    image = Icons.AutoMirrored.Filled.ArrowBack,
                     onClickBackButton = {
 
                     },
@@ -341,25 +362,29 @@ fun TopCharacterPreview() {
                 )
             }
         ) {
-            Box(modifier = Modifier
-                .padding(it)
-                .fillMaxSize()){
-                LazyColumn (
+            Box(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize()
+            ) {
+                LazyColumn(
                     modifier = Modifier
                         .padding(horizontal = 8.dp),
-                ){
-                    items(8){
-                        CardCharacter(characterModel = CharacterModel(
-                            "Rick Sanchez",
-                            "Alive",
-                            "Human",
-                            "Earth",
-                            "Citadel of Ricks",
-                            "https://rickandmortyapi.com/api/character/avatar/1.jpeg"),
+                ) {
+                    items(8) {
+                        CardCharacter(
+                            characterModel = CharacterModel(
+                                "Rick Sanchez",
+                                "Alive",
+                                "Human",
+                                "Earth",
+                                "Citadel of Ricks",
+                                "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
+                            ),
                             modifier = Modifier
                                 .height(150.dp)
                                 .padding(vertical = 5.dp)
-                        ){}
+                        ) {}
                     }
                 }
             }

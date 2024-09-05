@@ -1,6 +1,5 @@
 package com.gkm.rickmorty.components
 
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -12,6 +11,7 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -60,27 +60,14 @@ fun MainTopBar(
     title: @Composable () -> Unit,
     image: ImageVector,
     showButton: Boolean = false,
-    showSearchButton: Boolean = false,
-    showImage: Boolean = false,
     onClickBackButton: () -> Unit,
-    onClickAction: () -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
-    MediumTopAppBar(
+    TopAppBar(
         modifier = modifier,
-        scrollBehavior = scrollBehavior,
         title = {
             Column {
                 title()
-                if (showImage) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        painter = painterResource(id = R.drawable.rickmorty),
-                        contentDescription = "Logo",
-                        alignment = Alignment.Center
-                    )
-                }
             }
         },
         navigationIcon = {
@@ -94,86 +81,71 @@ fun MainTopBar(
                     )
                 }
             }
-        }
+        },
+        actions = actions
     )
-    //Box(
-    //        modifier = modifier
-    //            .fillMaxWidth()
-    //            .padding(8.dp)
-    //    )
-    //    {
-    //Column {
-    //            Box(modifier = Modifier) {
-    //                Row(verticalAlignment = Alignment.CenterVertically) {
-    //                    if (showBackButton) {
-    //                        IconButton(
-    //                            onClick = { onClickBackButton() }
-    //                        ) {
-    //                            Icon(
-    //                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    //                                contentDescription = "back"
-    //                            )
-    //                        }
-    //                    }
-    //                    title()
-    //                }
-    //            }
-    //            Box(
-    //                modifier = Modifier
-    //                    .fillMaxWidth()
-    //            ) {
-    //                if (showImage) {
-    //                    Image(
-    //                        modifier = Modifier
-    //                            .fillMaxWidth()
-    //                            .align(Alignment.Center),
-    //                        painter = painterResource(id = R.drawable.rickmorty),
-    //                        contentDescription = "Logo"
-    //                    )
-    //                }
-    //            }
-    //            Spacer(Modifier.size(8.dp))
-    //            if (showSearchButton) {
-    //                Box(
-    //                    modifier = Modifier
-    //                        .fillMaxWidth()
-    //                ) {
-    //                    Card(
-    //                        shape = RoundedCornerShape(8.dp),
-    //                        modifier = Modifier
-    //                            .fillMaxWidth()
-    //                            .align(alignment = Alignment.BottomEnd),
-    //                        elevation = CardDefaults.cardElevation(8.dp),
-    //                        colors = CardDefaults.cardColors(Color.White)
-    //                    ) {
-    //                        Row(
-    //                            verticalAlignment = Alignment.CenterVertically,
-    //                            modifier = Modifier
-    //                                .padding(horizontal = 4.dp)
-    //                                .fillMaxWidth()
-    //                        ) {
-    //                            TextButton(
-    //                                modifier = Modifier.fillMaxWidth(),
-    //                                onClick = { onClickAction() }
-    //                            ) {
-    //                                Icon(
-    //                                    imageVector = Icons.Default.Search,
-    //                                    contentDescription = "search",
-    //                                    tint = Color.Black
-    //                                )
-    //                                Text(
-    //                                    text = stringResource(id = R.string.search_character),
-    //                                    fontStyle = FontStyle.Italic,
-    //                                    textAlign = TextAlign.Center,
-    //                                    color = Color.Black
-    //                                )
-    //                            }
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
+}
 
+@Composable
+fun PartTopBar(
+    showSearchButton: Boolean = false,
+    showImage: Boolean = false,
+    onClickAction: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        if (showImage) {
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center),
+                painter = painterResource(id = R.drawable.rickmorty),
+                contentDescription = "Logo"
+            )
+        }
+    }
+    Spacer(Modifier.size(8.dp))
+    if (showSearchButton) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Card(
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(alignment = Alignment.BottomEnd),
+                elevation = CardDefaults.cardElevation(8.dp),
+                colors = CardDefaults.cardColors(Color.White)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .fillMaxWidth()
+                ) {
+                    TextButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onClickAction() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "search",
+                            tint = Color.Black
+                        )
+                        Text(
+                            text = stringResource(id = R.string.search_character),
+                            fontStyle = FontStyle.Italic,
+                            textAlign = TextAlign.Center,
+                            color = Color.Black
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable

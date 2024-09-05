@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -52,6 +53,7 @@ import com.gkm.rickmorty.components.GeneralLoader
 import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.MainTopBar
 import com.gkm.rickmorty.components.NotInternetLoader
+import com.gkm.rickmorty.components.PartTopBar
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
 import com.gkm.rickmorty.ui.theme.RickMortyTheme
 import com.gkm.rickmorty.viewModel.CharacterViewModel
@@ -63,15 +65,14 @@ fun CharacterView(
     viewModel: CharacterViewModel,
 ) {
     val characterPage = viewModel.characters.collectAsLazyPagingItems()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val scrollState = rememberLazyListState()
+    val showTopBarIcon = remember{ mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier,
         topBar = {
             HeadCharacter(
-                navController = navController,
-                scrollBehavior = scrollBehavior)
+                navController = navController)
         }
     ) {
         when {
@@ -107,8 +108,7 @@ fun CharacterView(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeadCharacter(
-    navController: NavController,
-    scrollBehavior: TopAppBarScrollBehavior
+    navController: NavController
 ) {
 
     MainTopBar(
@@ -123,13 +123,7 @@ fun HeadCharacter(
         onClickBackButton = {
             navController.popBackStack()
         },
-        showSearchButton = true,
-        onClickAction = {
-            navController.navigate("SearchBar")
-        },
-        showImage = true,
         modifier = Modifier,
-        scrollBehavior = scrollBehavior
         )
 }
 
@@ -143,6 +137,15 @@ fun BodyCharacter(
         modifier = modifier
             .fillMaxSize()
     ) {
+        item {
+            PartTopBar (
+                showSearchButton = true,
+                onClickAction = {
+                    navController.navigate("SearchBar")
+                },
+                showImage = true,
+            )
+        }
         items(characterPage.itemCount) { index ->
             characterPage[index]?.let { characterModel ->
                 CardCharacter(
@@ -353,11 +356,6 @@ fun TopCharacterPreview() {
                     onClickBackButton = {
 
                     },
-                    showSearchButton = true,
-                    onClickAction = {
-
-                    },
-                    showImage = true,
                     modifier = Modifier
                 )
             }
@@ -371,6 +369,14 @@ fun TopCharacterPreview() {
                     modifier = Modifier
                         .padding(horizontal = 8.dp),
                 ) {
+                    item{
+                        PartTopBar(
+                            showSearchButton = true,
+                            onClickAction = {
+                            },
+                            showImage = true,
+                        )
+                    }
                     items(8) {
                         CardCharacter(
                             characterModel = CharacterModel(

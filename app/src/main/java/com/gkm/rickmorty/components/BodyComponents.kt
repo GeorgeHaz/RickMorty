@@ -6,6 +6,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
@@ -46,12 +47,14 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gkm.rickmorty.R
+import org.intellij.lang.annotations.JdkConstants.VerticalScrollBarPolicy
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,7 +64,7 @@ fun MainTopBar(
     image: ImageVector,
     showButton: Boolean = false,
     onClickBackButton: () -> Unit,
-    actions: @Composable RowScope.() -> Unit = {}
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
         modifier = modifier,
@@ -87,64 +90,68 @@ fun MainTopBar(
 }
 
 @Composable
-fun PartTopBar(
+fun CollapsingToolbar(
+    modifier: Modifier = Modifier,
     showSearchButton: Boolean = false,
     showImage: Boolean = false,
-    onClickAction: () -> Unit
+    onClickAction: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     ) {
-        if (showImage) {
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center),
-                painter = painterResource(id = R.drawable.rickmorty),
-                contentDescription = "Logo"
-            )
-        }
-    }
-    Spacer(Modifier.size(8.dp))
-    if (showSearchButton) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Card(
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(alignment = Alignment.BottomEnd),
-                elevation = CardDefaults.cardElevation(8.dp),
-                colors = CardDefaults.cardColors(Color.White)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+        Column {
+            if (showImage) {
+                Image(
                     modifier = Modifier
-                        .padding(horizontal = 4.dp)
+                        .fillMaxWidth(),
+                    painter = painterResource(id = R.drawable.rickmorty),
+                    contentDescription = "Logo"
+                )
+            }
+
+            Spacer(Modifier.size(8.dp))
+            if (showSearchButton) {
+                Box(
+                    modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    TextButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { onClickAction() }
+                    Card(
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(alignment = Alignment.BottomEnd),
+                        elevation = CardDefaults.cardElevation(8.dp),
+                        colors = CardDefaults.cardColors(Color.White)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "search",
-                            tint = Color.Black
-                        )
-                        Text(
-                            text = stringResource(id = R.string.search_character),
-                            fontStyle = FontStyle.Italic,
-                            textAlign = TextAlign.Center,
-                            color = Color.Black
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .fillMaxWidth()
+                        ) {
+                            TextButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { onClickAction() }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "search",
+                                    tint = Color.Black
+                                )
+                                Text(
+                                    text = stringResource(id = R.string.search_character),
+                                    fontStyle = FontStyle.Italic,
+                                    textAlign = TextAlign.Center,
+                                    color = Color.Black
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
+
     }
 }
 
@@ -174,7 +181,7 @@ fun ButtonNav(
 
 @Composable
 fun Loader(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val circleColors: List<Color> = listOf(
         Color(0xFF98FB98),
@@ -224,7 +231,7 @@ fun GeneralLoader(
 
 @Composable
 fun NotInternetLoader(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier,

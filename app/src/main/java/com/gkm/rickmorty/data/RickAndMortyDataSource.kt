@@ -7,7 +7,9 @@ import okio.IOException
 import javax.inject.Inject
 
 class RickAndMortyDataSource @Inject constructor(
-    private val apiRickMorty: ApiRickMorty):PagingSource<Int, CharacterModel>() {
+    private val apiRickMorty: ApiRickMorty,
+    private val name:String?=null
+):PagingSource<Int, CharacterModel>() {
     override fun getRefreshKey(state: PagingState<Int, CharacterModel>): Int? {
         return  state.anchorPosition
     }
@@ -15,7 +17,7 @@ class RickAndMortyDataSource @Inject constructor(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CharacterModel> {
         return try{
             val page = params.key ?: 1
-            val response = apiRickMorty.getCharacterPage(page)
+            val response = apiRickMorty.getCharacterPage(page, name)
             val data = response.results
 
             val prevKey = if(page>0) page - 1 else null

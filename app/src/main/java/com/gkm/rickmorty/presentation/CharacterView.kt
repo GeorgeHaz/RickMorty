@@ -3,8 +3,6 @@ package com.gkm.rickmorty.presentation
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,20 +15,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,11 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -55,7 +44,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.gkm.rickmorty.R
-import com.gkm.rickmorty.components.CollapsingToolbar
 import com.gkm.rickmorty.components.GeneralLoader
 import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.MainTopBar
@@ -64,21 +52,20 @@ import com.gkm.rickmorty.presentation.model.character.CharacterModel
 import com.gkm.rickmorty.ui.theme.RickMortyTheme
 import com.gkm.rickmorty.viewModel.CharacterViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharacterView(
     navController: NavController,
     viewModel: CharacterViewModel,
 ) {
     val characterPage = viewModel.characters.collectAsLazyPagingItems()
-    val scrollState = rememberLazyListState()
-    val showTopBarIcon = remember{ mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier,
         topBar = {
             HeadCharacter(
-                navController = navController)
+                navController = navController,
+                viewModel = viewModel
+            )
         }
     ) {
         when {
@@ -111,12 +98,13 @@ fun CharacterView(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeadCharacter(
-    navController: NavController
+    navController: NavController,
+    viewModel: CharacterViewModel
 ) {
 
+    val characters = viewModel.searchString.collectAsState().value
     MainTopBar(
         title = {
             Text(
@@ -125,12 +113,18 @@ fun HeadCharacter(
             )
         },
         showButton = true,
-        image = Icons.AutoMirrored.Filled.ArrowBack,
+        button = Icons.AutoMirrored.Filled.ArrowBack,
         onClickBackButton = {
             navController.popBackStack()
         },
-        modifier = Modifier,
-        )
+        showImage = true,
+        showSearch = true,
+        placeHolder = "Search Character",
+        value = characters,
+        onValueChange = { name ->
+            viewModel.searchCharacter(name)
+        }
+    )
 }
 
 @Composable
@@ -140,36 +134,10 @@ fun BodyCharacter(
     navController: NavController
 ) {
 
-    val scrollState = rememberLazyListState()
-    var toolbarHeight by remember { mutableStateOf(150.dp) } // Altura inicial
-
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val delta = available.y.dp
-
-                val newHeight = (toolbarHeight - delta).coerceAtLeast(0.dp)
-                toolbarHeight = newHeight
-                return Offset.Zero
-            }
-        }
-    }
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .nestedScroll(nestedScrollConnection),
-        state = scrollState
     ) {
-        item {
-            CollapsingToolbar (
-                showSearchButton = true,
-                onClickAction = {
-                    navController.navigate("SearchBar")
-                },
-                showImage = true,
-                modifier = Modifier.scrollable(scrollState,Orientation.Vertical)
-            )
-        }
         items(characterPage.itemCount) { index ->
             characterPage[index]?.let { characterModel ->
                 CardCharacter(
@@ -361,7 +329,6 @@ fun MainDescription(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TopCharacterPreview() {
@@ -376,11 +343,13 @@ fun TopCharacterPreview() {
                         )
                     },
                     showButton = true,
-                    image = Icons.AutoMirrored.Filled.ArrowBack,
+                    button = Icons.AutoMirrored.Filled.ArrowBack,
                     onClickBackButton = {
 
                     },
-                    modifier = Modifier
+                    showImage = true,
+                    showSearch = true,
+                    placeHolder = "Search Character"
                 )
             }
         ) {
@@ -393,14 +362,6 @@ fun TopCharacterPreview() {
                     modifier = Modifier
                         .padding(horizontal = 8.dp),
                 ) {
-                    item{
-                        CollapsingToolbar(
-                            showSearchButton = true,
-                            onClickAction = {
-                            },
-                            showImage = true,
-                        )
-                    }
                     items(8) {
                         CardCharacter(
                             characterModel = CharacterModel(

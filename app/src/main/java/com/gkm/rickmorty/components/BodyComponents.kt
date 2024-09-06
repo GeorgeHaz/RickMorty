@@ -6,152 +6,135 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gkm.rickmorty.R
-import org.intellij.lang.annotations.JdkConstants.VerticalScrollBarPolicy
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopBar(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
-    image: ImageVector,
+    button: ImageVector,
     showButton: Boolean = false,
     onClickBackButton: () -> Unit,
-    actions: @Composable RowScope.() -> Unit = {},
+    showImage:Boolean = false,
+    imageApp: Painter = painterResource(id = R.drawable.rickmorty),
+    showSearch: Boolean = false,
+    value:String = "",
+    onValueChange: (String) -> Unit = {},
+    placeHolder:String = ""
 ) {
-    TopAppBar(
-        modifier = modifier,
-        title = {
-            Column {
-                title()
-            }
-        },
-        navigationIcon = {
+    val requester = remember{FocusRequester()}
+    val focusManager = LocalFocusManager.current
+    Column{
+        Row (
+            modifier = modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ){
             if (showButton) {
                 IconButton(
                     onClick = { onClickBackButton() }
                 ) {
                     Icon(
-                        imageVector = image,
+                        imageVector = button,
                         contentDescription = "back"
                     )
                 }
             }
-        },
-        actions = actions
-    )
-}
-
-@Composable
-fun CollapsingToolbar(
-    modifier: Modifier = Modifier,
-    showSearchButton: Boolean = false,
-    showImage: Boolean = false,
-    onClickAction: () -> Unit,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        Column {
-            if (showImage) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    painter = painterResource(id = R.drawable.rickmorty),
-                    contentDescription = "Logo"
-                )
-            }
-
-            Spacer(Modifier.size(8.dp))
-            if (showSearchButton) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Card(
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(alignment = Alignment.BottomEnd),
-                        elevation = CardDefaults.cardElevation(8.dp),
-                        colors = CardDefaults.cardColors(Color.White)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(horizontal = 4.dp)
-                                .fillMaxWidth()
-                        ) {
-                            TextButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = { onClickAction() }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = "search",
-                                    tint = Color.Black
-                                )
-                                Text(
-                                    text = stringResource(id = R.string.search_character),
-                                    fontStyle = FontStyle.Italic,
-                                    textAlign = TextAlign.Center,
-                                    color = Color.Black
-                                )
-                            }
+            title()
+        }
+        if (showImage) {
+            Image(
+                painter = imageApp,
+                contentDescription = "",
+                modifier = Modifier
+                    .fillMaxWidth(),
+                alignment = Alignment.Center
+            )
+        }
+        if(showSearch){
+            TextField(
+                value = value,
+                onValueChange = {character ->
+                    onValueChange(character)
+                },
+                placeholder = {
+                    Text(text = placeHolder)
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester = requester)
+                    .padding(horizontal = 5.dp),
+                trailingIcon = {
+                    if (value.isNotBlank()){
+                        IconButton(onClick = { onValueChange("") }) {
+                            Icon(
+                                imageVector = Icons.Filled.Search,
+                                contentDescription = "clear search",
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .size(20.dp))
                         }
                     }
-                }
-            }
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        focusManager.clearFocus()
+                    }
+                )
+            )
         }
-
     }
 }
 

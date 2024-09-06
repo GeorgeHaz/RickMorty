@@ -11,7 +11,10 @@ import retrofit2.http.Query
 interface ApiRickMorty {
 
     @GET(POINT_ONE)
-    suspend fun getCharacterPage(@Query("page")page:Int): CharacterResponse
+    suspend fun getCharacterPage(
+        @Query("page")page:Int,
+        @Query("name")name:String?=null
+    ): CharacterResponse
 
     @GET(POINT_TWO)
     suspend fun getEpisode():Response<LocationModel>

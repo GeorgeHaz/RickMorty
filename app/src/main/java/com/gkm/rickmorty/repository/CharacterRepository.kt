@@ -13,10 +13,10 @@ import javax.inject.Inject
 
 class CharacterRepository @Inject constructor(private val apiRickMorty: ApiRickMorty) {
 
-    fun getAllCharacters(): Flow<PagingData<CharacterModel>>{
+    fun getAllCharacters(name:String?=null): Flow<PagingData<CharacterModel>>{
         return Pager(config = PagingConfig(pageSize = MAX_ITEMS, prefetchDistance = PREFETCH_ITEMS),
             pagingSourceFactory = {
-                RickAndMortyDataSource(apiRickMorty)
+                RickAndMortyDataSource(apiRickMorty, name)
             }).flow
     }
 }

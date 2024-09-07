@@ -10,6 +10,7 @@ import com.gkm.rickmorty.presentation.CharacterView
 import com.gkm.rickmorty.presentation.EpisodeView
 import com.gkm.rickmorty.presentation.HomeView
 import com.gkm.rickmorty.presentation.LocationView
+import com.gkm.rickmorty.presentation.SearchCharacters
 import com.gkm.rickmorty.viewModel.CharacterViewModel
 
 @Composable
@@ -27,6 +28,9 @@ fun NavManager(
             }
             composable(RouteNav.Character.route) {
                 CharacterView(navController, viewModel)
+            }
+            composable(RouteNav.SearchCharacters.route) {
+                SearchCharacters(viewModel = viewModel, navController = navController)
             }
             composable(RouteNav.Episode.route) {
                 EpisodeView(navController)

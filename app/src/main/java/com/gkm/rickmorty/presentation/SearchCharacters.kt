@@ -1,80 +1,53 @@
 package com.gkm.rickmorty.presentation
 
-/*@Composable
-fun SearchCharacters(viewModel: CharacterViewModel, navController: NavController) {
-    val searchCharacter by viewModel.searchCharacter.collectAsState()
-    val isSearching by viewModel.isSearching.collectAsState()
-    val filterCharacters by viewModel.filteredCharacters.collectAsState()
-    val character by viewModel.character.collectAsState()
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
+import com.gkm.rickmorty.R
+import com.gkm.rickmorty.components.CustomSearchBar
+import com.gkm.rickmorty.viewModel.CharacterViewModel
 
-    Scaffold(
-        topBar = {
-            SearchTopBar(
-                tittle = {
-                    TextField(
-                        value = searchCharacter,
-                        onValueChange = {viewModel.onSearchTextChange(it)},
-                        maxLines = 1,
-                        singleLine = true,
-                        placeholder = {
-                            Text(text = "Buscar personajes")
-                        }, colors = TextFieldDefaults.colors(
-                            focusedTextColor = MaterialTheme.colorScheme.onTertiary,
-                        )
-                    )
-                },
-                showImage = true
-            )
-        }
-    ) { paddingValues ->
-
-        if(isSearching){
-            Box (modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-            ){
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-        }else if(searchCharacter.isNotBlank()){
-            BodyCharacter(
-                navController = navController,
-                paddingValues = paddingValues,
-                parameter = filterCharacters
-            )
-        }else{
-            BodyCharacter(
-                navController = navController,
-                paddingValues = paddingValues,
-                parameter = character
-            )
-        }
+@Composable
+fun SearchCharacters(
+    viewModel: CharacterViewModel,
+    navController: NavController) {
+    var value by remember {
+        mutableStateOf("")
     }
-}*/
+    Scaffold (
+        topBar = {
+            CustomSearchBar(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                value = value,
+                onValueChange = {
+                    value = it
+                },
+                placeHolder = {
+                    Text(text = stringResource(id = R.string.search_character))
+                },
+                navigateUp = { navController.navigateUp() })
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ){
+        BodySearchCharacters(modifier = Modifier.padding(it))
+    }
 
-//SearchBar(
-//                query = query,
-//                onQueryChange = { query = it },
-//                onSearch = { active = false },
-//                active = active,
-//                onActiveChange = { active = it },
-//                placeholder = { Text(text = "Buscar personaje") }
-//            ) {
-//                if (query.isNotEmpty()) {
-//                    val filterCharacter =
-//                        character.filter { it.name.contains(query, ignoreCase = true) }
-//                    filterCharacter.forEach {
-//                        Text(
-//                            text = it.name,
-//                            fontSize = 20.sp,
-//                            fontWeight = FontWeight.Bold,
-//                            modifier = Modifier
-//                                .padding(bottom = 10.dp, start = 10.dp)
-//                                .clickable {
-//                                    navController.navigate("DetailsView/${it.id}")
-//                                }
-//                        )
-//                    }
-//                }
-//            }
+}
+
+@Composable
+fun BodySearchCharacters(
+    modifier: Modifier = Modifier
+){
+
+}

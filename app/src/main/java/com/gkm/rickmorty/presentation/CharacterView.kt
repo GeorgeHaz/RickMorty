@@ -23,7 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +47,7 @@ import com.gkm.rickmorty.components.GeneralLoader
 import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.MainTopBar
 import com.gkm.rickmorty.components.NotInternetLoader
+import com.gkm.rickmorty.navigate.RouteNav
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
 import com.gkm.rickmorty.ui.theme.RickMortyTheme
 import com.gkm.rickmorty.viewModel.CharacterViewModel
@@ -63,10 +63,8 @@ fun CharacterView(
         modifier = Modifier,
         topBar = {
             HeadCharacter(
-                navController = navController,
-                viewModel = viewModel
-            )
-        }
+                navController = navController)},
+        containerColor = MaterialTheme.colorScheme.background,
     ) {
         when {
             //start charge
@@ -101,10 +99,8 @@ fun CharacterView(
 @Composable
 fun HeadCharacter(
     navController: NavController,
-    viewModel: CharacterViewModel
 ) {
 
-    val characters = viewModel.searchString.collectAsState().value
     MainTopBar(
         title = {
             Text(
@@ -119,10 +115,8 @@ fun HeadCharacter(
         },
         showImage = true,
         showSearch = true,
-        placeHolder = "Search Character",
-        value = characters,
-        onValueChange = { name ->
-            viewModel.searchCharacter(name)
+        onClickAction = {
+            navController.navigate(RouteNav.SearchCharacters.route)
         }
     )
 }
@@ -170,7 +164,7 @@ fun CardCharacter(
             .clickable {
                 onClick()
             },
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.onTertiary)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
     ) {
         Row(
             modifier = Modifier
@@ -349,7 +343,9 @@ fun TopCharacterPreview() {
                     },
                     showImage = true,
                     showSearch = true,
-                    placeHolder = "Search Character"
+                    onClickAction = {
+
+                    }
                 )
             }
         ) {
@@ -375,7 +371,9 @@ fun TopCharacterPreview() {
                             modifier = Modifier
                                 .height(150.dp)
                                 .padding(vertical = 5.dp)
-                        ) {}
+                        ) {
+
+                        }
                     }
                 }
             }

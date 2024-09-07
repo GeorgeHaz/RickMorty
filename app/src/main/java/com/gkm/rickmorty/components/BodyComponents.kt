@@ -1,5 +1,6 @@
 package com.gkm.rickmorty.components
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -10,45 +11,56 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gkm.rickmorty.R
+import com.gkm.rickmorty.ui.theme.RickMortyTheme
 
 @Composable
 fun MainTopBar(
@@ -57,21 +69,17 @@ fun MainTopBar(
     button: ImageVector,
     showButton: Boolean = false,
     onClickBackButton: () -> Unit,
-    showImage:Boolean = false,
+    showImage: Boolean = false,
     imageApp: Painter = painterResource(id = R.drawable.rickmorty),
     showSearch: Boolean = false,
-    value:String = "",
-    onValueChange: (String) -> Unit = {},
-    placeHolder:String = ""
+    onClickAction: () -> Unit,
 ) {
-    val requester = remember{FocusRequester()}
-    val focusManager = LocalFocusManager.current
-    Column{
-        Row (
+    Column {
+        Row(
             modifier = modifier
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             if (showButton) {
                 IconButton(
                     onClick = { onClickBackButton() }
@@ -85,57 +93,121 @@ fun MainTopBar(
             title()
         }
         if (showImage) {
-            Image(
-                painter = imageApp,
-                contentDescription = "",
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                alignment = Alignment.Center
-            )
+                    .height(150.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = imageApp,
+                    contentDescription = "logo_rickMorty",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .size(80.dp),
+                    alignment = Alignment.Center
+                )
+            }
         }
-        if(showSearch){
-            TextField(
-                value = value,
-                onValueChange = {character ->
-                    onValueChange(character)
-                },
-                placeholder = {
-                    Text(text = placeHolder)
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                ),
+        Spacer(Modifier.size(8.dp))
+        if (showSearch) {
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .focusRequester(focusRequester = requester)
-                    .padding(horizontal = 5.dp),
-                trailingIcon = {
-                    if (value.isNotBlank()){
-                        IconButton(onClick = { onValueChange("") }) {
+                    .padding(8.dp)
+            ) {
+                Card(
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(alignment = Alignment.BottomEnd),
+                    elevation = CardDefaults.cardElevation(8.dp),
+                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .fillMaxWidth()
+                    ) {
+                        TextButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { onClickAction() }
+                        ) {
                             Icon(
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = "clear search",
-                                modifier = Modifier
-                                    .padding(end = 8.dp)
-                                    .size(20.dp))
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "search"
+                            )
+                            Text(
+                                text = stringResource(id = R.string.search_character),
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center,
+                            )
                         }
                     }
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Search
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        focusManager.clearFocus()
-                    }
-                )
-            )
+                }
+            }
         }
     }
+}
+
+@Composable
+fun CustomSearchBar(
+    modifier: Modifier = Modifier,
+    icon:ImageVector,
+    value: String="",
+    placeHolder:@Composable () -> Unit,
+    navigateUp: () -> Unit,
+    onValueChange: (String) -> Unit,
+){
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
+                .fillMaxWidth()
+        ){
+            IconButton(
+                onClick = { navigateUp() }
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "back"
+                )
+            }
+            TextField(
+                value = value,
+                onValueChange =onValueChange,
+                placeholder = placeHolder,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        onValueChange(value)
+                    }),
+                trailingIcon = {
+                    if(value.isNotEmpty()){
+                        IconButton(
+                            onClick = { onValueChange("") }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "")}
+                    }
+                }
+            )
+        }
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.outline)
+    }
+
 }
 
 @Composable
@@ -226,5 +298,31 @@ fun NotInternetLoader(
                 .fillMaxSize(),
             textAlign = TextAlign.Center
         )
+    }
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun SearchPreview() {
+    RickMortyTheme(darkTheme = false) {
+        var value by remember {
+            mutableStateOf("")
+        }
+        Scaffold(
+            topBar ={
+                CustomSearchBar(
+                    icon = Icons.AutoMirrored.Filled.ArrowBack,
+                    value = value,
+                    onValueChange = {
+                        value = it
+                    },
+                    placeHolder = {
+                        Text(text = "Search Characters")
+                    },
+                    navigateUp = { /*TODO*/ })
+            }
+        ) {
+        }
     }
 }

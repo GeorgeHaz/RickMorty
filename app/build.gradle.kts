@@ -72,7 +72,7 @@ dependencies {
     //daggerHilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
-    implementation(libs.hilt.adnroid.navigation)
+    implementation(libs.hilt.android.navigation)
 
     //retrofit
     implementation (libs.converter.gson)

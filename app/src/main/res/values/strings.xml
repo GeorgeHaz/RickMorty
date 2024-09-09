@@ -13,5 +13,6 @@
     <string name="error_loading">Error Loading</string>
     <string name="search_character">Search Character</string>
     <string name="not_internet">There is no internet connection</string>
+    <string name="not_found">Not Found!</string>
 
 </resources>

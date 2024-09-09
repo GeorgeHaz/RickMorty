@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
 import okio.IOException
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class RickAndMortyDataSource @Inject constructor(
@@ -20,7 +21,7 @@ class RickAndMortyDataSource @Inject constructor(
             val response = apiRickMorty.getCharacterPage(page, name)
             val data = response.results
 
-            val prevKey = if(page>0) page - 1 else null
+            val prevKey = if(page == 1) null else page - 1
             val nextKey = if(response.info.next != null) page + 1 else null
 
             LoadResult.Page(
@@ -29,6 +30,16 @@ class RickAndMortyDataSource @Inject constructor(
                 prevKey = prevKey,
                 nextKey = nextKey
             )
+        }catch (e: HttpException) {
+            if (e.code() == 404) {
+                LoadResult.Page(
+                    data = emptyList(),
+                    prevKey = null,
+                    nextKey = null
+                )
+            } else {
+                LoadResult.Error(e)
+            }
         }catch (e:IOException){
             LoadResult.Error(e)
         }

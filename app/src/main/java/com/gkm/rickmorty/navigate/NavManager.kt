@@ -12,10 +12,12 @@ import com.gkm.rickmorty.presentation.HomeView
 import com.gkm.rickmorty.presentation.LocationView
 import com.gkm.rickmorty.presentation.SearchCharacters
 import com.gkm.rickmorty.viewModel.CharacterViewModel
+import com.gkm.rickmorty.viewModel.SearchCharacterModel
 
 @Composable
 fun NavManager(
     viewModel: CharacterViewModel,
+    viewModelSearch: SearchCharacterModel,
     modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
@@ -30,7 +32,9 @@ fun NavManager(
                 CharacterView(navController, viewModel)
             }
             composable(RouteNav.SearchCharacters.route) {
-                SearchCharacters(viewModel = viewModel, navController = navController)
+                SearchCharacters(
+                    viewModel = viewModelSearch,
+                    navController = navController)
             }
             composable(RouteNav.Episode.route) {
                 EpisodeView(navController)
@@ -41,9 +45,6 @@ fun NavManager(
             composable("DetailsView"){
                 CharacterDetailView(navController, modifier)
             }
-            /*composable("SearchBar"){
-                SearchCharacters(viewModel = viewModel, navController = navController)
-            }*/
         }
     )
 }

@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class RickAndMortyDataSource @Inject constructor(
     private val apiRickMorty: ApiRickMorty,
-    private val name:String?=null
+    private val name:String?=null,
 ):PagingSource<Int, CharacterModel>() {
     override fun getRefreshKey(state: PagingState<Int, CharacterModel>): Int? {
         return  state.anchorPosition

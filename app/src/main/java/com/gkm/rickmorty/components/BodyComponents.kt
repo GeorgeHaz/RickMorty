@@ -86,7 +86,7 @@ fun MainTopBar(
         if (showImage) {
             Box(
                 modifier = Modifier
-                    .height(150.dp),
+                    .height(120.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -130,7 +130,7 @@ fun MainTopBar(
                             )
                             Text(
                                 text = stringResource(id = R.string.search_character),
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = MaterialTheme.typography.labelLarge,
                                 textAlign = TextAlign.Center,
                             )
                         }

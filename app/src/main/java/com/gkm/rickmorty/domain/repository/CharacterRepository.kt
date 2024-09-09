@@ -1,4 +1,4 @@
-package com.gkm.rickmorty.repository
+package com.gkm.rickmorty.domain.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -18,5 +18,9 @@ class CharacterRepository @Inject constructor(private val apiRickMorty: ApiRickM
             pagingSourceFactory = {
                 RickAndMortyDataSource(apiRickMorty, name)
             }).flow
+    }
+
+    suspend fun getCharacterDetail(idCharacter:Int):CharacterModel{
+        return apiRickMorty.getCharacterDetail(idCharacter).toPresentation()
     }
 }

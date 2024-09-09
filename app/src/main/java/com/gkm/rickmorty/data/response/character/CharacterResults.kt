@@ -22,9 +22,16 @@ data class CharacterResults(
             name = name,
             status = status,
             species = species,
+            type = type,
             gender = gender,
-            location = location.name,
-            image = image
+            originName = origin.name,
+            originUrl = origin.url,
+            locationName = location.name,
+            locationUrl = location.url,
+            image = image,
+            episode = episode,
+            url = url,
+            created = created
         )
     }
 }

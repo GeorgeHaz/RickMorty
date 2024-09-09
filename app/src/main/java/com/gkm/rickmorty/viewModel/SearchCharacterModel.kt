@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
-import com.gkm.rickmorty.useCase.character.CharacterUseCase
+import com.gkm.rickmorty.domain.useCase.character.CharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -33,7 +33,7 @@ class SearchCharacterModel @Inject constructor(
             if(query.isEmpty()){
                 flowOf(PagingData.empty())
             }else{
-                useCase.invoke(query)
+                useCase.invoke(name = query)
             }
         }
         .cachedIn(viewModelScope)

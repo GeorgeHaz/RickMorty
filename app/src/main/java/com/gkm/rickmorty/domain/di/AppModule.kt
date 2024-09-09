@@ -1,4 +1,4 @@
-package com.gkm.rickmorty.di
+package com.gkm.rickmorty.domain.di
 
 import com.gkm.rickmorty.data.ApiRickMorty
 import com.gkm.rickmorty.util.Constans.Companion.BASE_URL

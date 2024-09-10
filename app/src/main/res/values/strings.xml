@@ -3,6 +3,7 @@
     <!-- Title -->
     <string name="home">Home</string>
     <string name="character">Character</string>
+    <string name="details_character">Details Character</string>
     <string name="episode">Episode</string>
     <string name="location">Location</string>
     <!-- Card -->

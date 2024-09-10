@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import com.gkm.rickmorty.navigate.NavManager
 import com.gkm.rickmorty.ui.theme.RickMortyTheme
 import com.gkm.rickmorty.viewModel.CharacterViewModel
+import com.gkm.rickmorty.viewModel.DetailsCharacterViewModel
 import com.gkm.rickmorty.viewModel.SearchCharacterModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
 
         val viewModel:CharacterViewModel by viewModels()
         val viewModelSearch: SearchCharacterModel by viewModels()
+        val viewModelDetails: DetailsCharacterViewModel by viewModels()
 
         setContent {
             RickMortyTheme {
@@ -30,6 +32,7 @@ class MainActivity : ComponentActivity() {
                     NavManager(
                         viewModel = viewModel,
                         viewModelSearch = viewModelSearch,
+                        viewModelDetails = viewModelDetails,
                         modifier = Modifier
                             .padding(it))
                 }

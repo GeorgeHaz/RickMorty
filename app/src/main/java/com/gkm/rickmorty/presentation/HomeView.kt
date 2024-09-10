@@ -103,11 +103,3 @@ fun BodyHome(
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun HomeViewPreview() {
-    RickMortyTheme (darkTheme = true){
-        HomeView(navController = rememberNavController())
-    }
-}

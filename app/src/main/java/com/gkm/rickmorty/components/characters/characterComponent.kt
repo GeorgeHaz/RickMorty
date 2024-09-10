@@ -14,9 +14,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +37,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.rememberAsyncImagePainter
@@ -39,40 +46,44 @@ import com.gkm.rickmorty.R
 import com.gkm.rickmorty.components.GeneralLoader
 import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.NotFound
+import com.gkm.rickmorty.navigate.RouteNav
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
 
 @Composable
 fun CharacterListColumn(
     modifier: Modifier = Modifier,
-    characters:LazyPagingItems<CharacterModel>,
-    onClick: () -> Unit
-){
+    characters: LazyPagingItems<CharacterModel>,
+    navController: NavController,
+) {
     LazyColumn(modifier)
     {
-        items(characters.itemCount){
-            characters[it]?.let {characterModel ->
+        items(characters.itemCount) {
+            characters[it]?.let { characterModel ->
                 CardCharacter(
                     characterModel = characterModel,
                     modifier = Modifier.padding(8.dp),
-                    onClick = onClick)
+                    navController = navController
+                )
             }
         }
         characters.apply {
-            when{
-                loadState.append is LoadState.Loading ->{
-                    item{
+            when {
+                loadState.append is LoadState.Loading -> {
+                    item {
                         GeneralLoader(modifier = Modifier.fillParentMaxSize())
                     }
                 }
-                loadState.refresh is LoadState.Error ->{
-                    item{
+
+                loadState.refresh is LoadState.Error -> {
+                    item {
                         NotFound(
                             modifier = Modifier
                                 .fillMaxSize(),
                         )
                     }
                 }
-                loadState.append is LoadState.Error ->{
+
+                loadState.append is LoadState.Error -> {
                     item {
                         NotFound(
                             modifier = Modifier
@@ -80,8 +91,9 @@ fun CharacterListColumn(
                         )
                     }
                 }
-                loadState.hasError->{
-                    item{
+
+                loadState.hasError -> {
+                    item {
                         NotFound()
                     }
                 }
@@ -95,14 +107,14 @@ fun CharacterListColumn(
 fun CardCharacter(
     characterModel: CharacterModel,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    navController: NavController,
 ) {
     Card(
         elevation = CardDefaults.cardElevation(5.dp),
         modifier = modifier
             .fillMaxWidth()
             .clickable {
-                onClick()
+                navController.navigate(route = RouteNav.DetailsCharacter.route + "/${characterModel.id}")
             },
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
     ) {
@@ -127,14 +139,14 @@ fun CardCharacter(
 
 @Composable
 fun MainImage(
-    characters: CharacterModel,
     modifier: Modifier = Modifier,
+    characters: CharacterModel = CharacterModel(),
 ) {
     var isLoading by remember {
         mutableStateOf(true)
     }
     val images = rememberAsyncImagePainter(
-        ImageRequest.Builder(LocalContext.current)
+        model = ImageRequest.Builder(LocalContext.current)
             .data(characters.image)
             .apply(
                 block = fun ImageRequest.Builder.() {
@@ -240,7 +252,7 @@ fun MainDescription(
                         style = MaterialTheme.typography.labelSmall,
                     )
                     Text(
-                        text = characters.location,
+                        text = characters.locationName,
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -261,4 +273,30 @@ fun MainDescription(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CharacterDetailTopBar(
+    navController: NavController,
+    text: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    MediumTopAppBar(
+        modifier = modifier,
+        title = {
+            text()
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "back"
+                )
+            }
+        })
 }

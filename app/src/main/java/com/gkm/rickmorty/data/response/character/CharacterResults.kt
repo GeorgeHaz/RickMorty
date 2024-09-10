@@ -19,6 +19,7 @@ data class CharacterResults(
 ){
     fun toPresentation():CharacterModel{
         return CharacterModel(
+            id = id,
             name = name,
             status = status,
             species = species,

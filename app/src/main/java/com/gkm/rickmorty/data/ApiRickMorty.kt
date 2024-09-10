@@ -15,8 +15,7 @@ interface ApiRickMorty {
     @GET(POINT_ONE)
     suspend fun getCharacterPage(
         @Query("page")page:Int,
-        @Query("name")name:String?=null,
-        @Path("id")id:Int?=null
+        @Query("name")name:String?=null
     ): CharacterResponse
 
     @GET("$POINT_ONE/{id_Character}")

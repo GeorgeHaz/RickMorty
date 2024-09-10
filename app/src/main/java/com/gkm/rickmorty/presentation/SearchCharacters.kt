@@ -63,8 +63,6 @@ fun BodySearchCharacters(
         modifier = modifier
             .fillMaxSize(),
         characters = characterPage,
-        onClick = {
-            navController.navigate(route = "DetailsView")
-        },
+        navController = navController
     )
 }

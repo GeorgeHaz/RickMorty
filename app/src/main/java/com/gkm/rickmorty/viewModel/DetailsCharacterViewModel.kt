@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailsCharacter @Inject constructor(
+class DetailsCharacterViewModel @Inject constructor(
     private val useCase: CharacterUseCase
 ) : ViewModel() {
 
@@ -36,5 +36,9 @@ class DetailsCharacter @Inject constructor(
                 Log.e("Error", e.message.toString())
             }
         }
+    }
+
+    fun clearCharacterDetail() {
+        _uiState.value = CharacterUiState()
     }
 }

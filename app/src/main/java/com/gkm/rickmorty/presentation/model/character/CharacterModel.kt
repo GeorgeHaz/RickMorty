@@ -1,6 +1,7 @@
 package com.gkm.rickmorty.presentation.model.character
 
 data class CharacterModel(
+    val id:Int = 0,
     val name:String = "",
     val status:String = "",
     val species:String = "",

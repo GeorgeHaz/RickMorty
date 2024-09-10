@@ -35,7 +35,9 @@ fun CharacterView(
         modifier = Modifier,
         topBar = {
             HeadCharacter(
-                navController = navController)},
+                navController = navController
+            )
+        },
         containerColor = MaterialTheme.colorScheme.background,
     ) {
         when {
@@ -97,16 +99,14 @@ fun HeadCharacter(
 fun BodyCharacter(
     modifier: Modifier = Modifier,
     characterPage: LazyPagingItems<CharacterModel>,
-    navController: NavController
+    navController: NavController,
 ) {
 
     CharacterListColumn(
         modifier = modifier
             .fillMaxSize(),
         characters = characterPage,
-        onClick = {
-            navController.navigate(route = "DetailsView")
-        },
+        navController = navController
     )
 }
 

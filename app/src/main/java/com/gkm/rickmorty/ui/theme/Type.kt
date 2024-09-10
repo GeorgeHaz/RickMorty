@@ -1,8 +1,6 @@
 package com.gkm.rickmorty.ui.theme
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -32,8 +30,8 @@ val myTypography = Typography(
     ),
     displaySmall = TextStyle(
         fontFamily = Jost,
-        fontWeight = FontWeight.Normal,
-        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 30.sp,
         lineHeight = 32.sp
     ),
     bodyLarge = TextStyle(
@@ -86,8 +84,8 @@ val myTypography = Typography(
     ),
     titleSmall = TextStyle(
         fontFamily = Jost,
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
-        lineHeight = 22.sp
+        fontWeight = FontWeight.Medium,
+        fontSize = 20.sp,
+        lineHeight = 28.sp
     ),
 )

@@ -79,13 +79,13 @@ val myTypography = Typography(
     titleMedium = TextStyle(
         fontFamily = Jost,
         fontWeight = FontWeight.Bold,
-        fontSize = 34.sp,
-        lineHeight = 40.sp
+        fontSize = 24.sp,
+        lineHeight = 30.sp
     ),
     titleSmall = TextStyle(
         fontFamily = Jost,
         fontWeight = FontWeight.Medium,
-        fontSize = 20.sp,
-        lineHeight = 28.sp
+        fontSize = 16.sp,
+        lineHeight = 22.sp
     ),
 )

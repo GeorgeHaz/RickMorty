@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -36,6 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -46,8 +49,10 @@ import com.gkm.rickmorty.R
 import com.gkm.rickmorty.components.GeneralLoader
 import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.NotFound
+import com.gkm.rickmorty.data.response.character.CharacterUiState
 import com.gkm.rickmorty.navigate.RouteNav
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
+import com.gkm.rickmorty.ui.theme.RickMortyTheme
 
 @Composable
 fun CharacterListColumn(
@@ -300,3 +305,136 @@ fun CharacterDetailTopBar(
             }
         })
 }
+
+@Composable
+fun CharacterDetailBody(
+    modifier: Modifier = Modifier,
+    detailCharacter: CharacterUiState
+) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
+        item {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            ) {
+                Text(
+                    text = stringResource(id = R.string.detail_character),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                BoxCharacterDetail(
+                    textTittle = stringResource(id = R.string.specie),
+                    text = detailCharacter.character.species
+                )
+                BoxCharacterDetail(
+                    textTittle = stringResource(id = R.string.type),
+                    text = detailCharacter.character.type
+                )
+                BoxCharacterDetail(
+                    textTittle = stringResource(id = R.string.gender),
+                    text = detailCharacter.character.gender
+                )
+                BoxCharacterDetail(
+                    textTittle = stringResource(id = R.string.origin),
+                    text = detailCharacter.character.originName
+                )
+                BoxCharacterDetail(
+                    textTittle = stringResource(id = R.string.location),
+                    text = detailCharacter.character.locationName
+                )
+            }
+        }
+        items(detailCharacter.character.episode.size) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            ) {
+                BoxCharacterDetail(
+                    textTittle = stringResource(id = R.string.episode),
+                    text = detailCharacter.character.episode[it]
+                )
+            }
+        }
+    }
+
+}
+
+@Composable
+fun BoxCharacterDetail(
+    modifier: Modifier = Modifier,
+    textTittle: String,
+    text: String
+) {
+    Box(
+        modifier = modifier
+            .padding(horizontal = 30.dp)
+            .fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = textTittle,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(start = 10.dp)
+            )
+        }
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun BoxPreview() {
+    RickMortyTheme {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        ) {
+            Text(
+                text = stringResource(id = R.string.detail_character),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold
+            )
+            BoxCharacterDetail(
+                textTittle = stringResource(id = R.string.specie),
+                text = "Human"
+            )
+            BoxCharacterDetail(
+                textTittle = stringResource(id = R.string.type),
+                text = "Animal"
+            )
+            BoxCharacterDetail(
+                textTittle = stringResource(id = R.string.gender),
+                text = "Male"
+            )
+            BoxCharacterDetail(
+                textTittle = stringResource(id = R.string.origin),
+                text = "Planet black"
+            )
+            BoxCharacterDetail(
+                textTittle = stringResource(id = R.string.location),
+                text = "Terra"
+            )
+        }
+    }
+}
+
+//https://github.com/JoyceQuerubino/Rick-and-Morty

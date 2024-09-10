@@ -15,5 +15,9 @@
     <string name="search_character">Search Character</string>
     <string name="not_internet">There is no internet connection</string>
     <string name="not_found">Not Found!</string>
-
+    <!-- Details -->
+    <string name="specie">Specie:</string>
+    <string name="type">Type:</string>
+    <string name="gender">Gender:</string>
+    <string name="detail_character">ABOUT THE CHARACTER</string>
 </resources>

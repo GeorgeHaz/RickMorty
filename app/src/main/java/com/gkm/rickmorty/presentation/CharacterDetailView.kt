@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,7 +32,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.gkm.rickmorty.components.Loader
+import com.gkm.rickmorty.components.characters.CharacterDetailBody
 import com.gkm.rickmorty.components.characters.CharacterDetailTopBar
+import com.gkm.rickmorty.data.response.character.CharacterUiState
+import com.gkm.rickmorty.data.response.character.UiState
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
 import com.gkm.rickmorty.ui.theme.RickMortyTheme
 import com.gkm.rickmorty.viewModel.DetailsCharacterViewModel
@@ -43,7 +48,8 @@ fun CharacterDetailView(
     navController: NavController,
     id: Int,
 ) {
-    val result = viewModel.uiState.value.character
+    val detail = viewModel.uiState.value
+
     LaunchedEffect(key1 = Unit) {
         viewModel.getCharacterDetail(id)
     }
@@ -64,7 +70,7 @@ fun CharacterDetailView(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = result.name,
+                            text = detail.character.name,
                             style = MaterialTheme.typography.displaySmall
                         )
                     }
@@ -74,7 +80,7 @@ fun CharacterDetailView(
         BodyCharacterDetails(
             modifier = Modifier
                 .padding(it),
-            result = result
+            detail = detail
         )
     }
 }
@@ -82,46 +88,62 @@ fun CharacterDetailView(
 @Composable
 fun BodyCharacterDetails(
     modifier: Modifier = Modifier,
-    result: CharacterModel,
+    detail: CharacterUiState,
 ) {
-    Column(
-        modifier = modifier.fillMaxSize()
-    )
-    {
-        ImageCharacter(
-            result = result
+    if (detail.uiState == UiState.SUCCESS) {
+        Column(
+            modifier = modifier.fillMaxSize()
         )
+        {
+            ImageCharacter(
+                detail = detail
+            )
+            CharacterDetail(
+                detail = detail
+            )
+        }
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Loader()
+        }
     }
+
 }
 
 @Composable
 fun ImageCharacter(
-    result: CharacterModel,
+    detail: CharacterUiState,
     modifier: Modifier = Modifier
 ) {
     val imageCharacter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(result.image)
+            .data(detail.character.image)
             .build()
     )
-    val colorLive = when(result.status){
+    val colorLive = when (detail.character.status) {
         "Alive" -> Color.Green
         "Dead" -> Color.Red
         else -> Color.Gray
     }
-    val sizeCharacter = when(result.status){
+    val sizeCharacter = when (detail.character.status) {
         "unknown" -> 200.dp
         else -> 220.dp
     }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(8.dp)
             .height(sizeCharacter)
-        ){
+    )
+    {
         Image(
             painter = imageCharacter,
-            contentDescription = result.name,
+            contentDescription = detail.character.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(200.dp)
@@ -135,14 +157,32 @@ fun ImageCharacter(
                 .clip(RoundedCornerShape(10.dp))
                 .background(colorLive)
                 .padding(4.dp)
-        ){
+        ) {
             Text(
-                text = result.status,
+                text = detail.character.status,
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 letterSpacing = 0.2.em
-                )
+            )
         }
+    }
+
+}
+
+@Composable
+fun CharacterDetail(
+    detail: CharacterUiState,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+        CharacterDetailBody(
+            detailCharacter = detail
+        )
     }
 }
 
@@ -150,6 +190,12 @@ fun ImageCharacter(
 @Composable
 fun PreviewCharacterDetailView() {
     RickMortyTheme {
-        ImageCharacter(result = CharacterModel(status = "unknown"))
+        ImageCharacter(
+            detail = CharacterUiState(
+                character = CharacterModel(
+                    name = "Rick"
+                )
+            )
+        )
     }
 }

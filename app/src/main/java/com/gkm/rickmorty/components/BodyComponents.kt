@@ -69,7 +69,7 @@ fun MainTopBar(
         Row(
             modifier = modifier
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (showButton) {
                 IconButton(

@@ -1,7 +1,8 @@
-package com.gkm.rickmorty.data
+package com.gkm.rickmorty.data.pagging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.gkm.rickmorty.data.network.ApiRickMorty
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
 import okio.IOException
 import retrofit2.HttpException

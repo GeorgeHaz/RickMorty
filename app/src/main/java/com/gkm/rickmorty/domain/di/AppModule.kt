@@ -1,6 +1,6 @@
 package com.gkm.rickmorty.domain.di
 
-import com.gkm.rickmorty.data.ApiRickMorty
+import com.gkm.rickmorty.data.network.ApiRickMorty
 import com.gkm.rickmorty.util.Constans.Companion.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -26,7 +26,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun providesApiRickMorty(retrofit: Retrofit):ApiRickMorty{
+    fun providesApiRickMorty(retrofit: Retrofit): ApiRickMorty {
         return retrofit.create(ApiRickMorty::class.java)
     }
 }

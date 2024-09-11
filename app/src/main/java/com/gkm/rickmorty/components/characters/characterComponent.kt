@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -50,6 +50,7 @@ import com.gkm.rickmorty.components.GeneralLoader
 import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.NotFound
 import com.gkm.rickmorty.data.response.character.CharacterUiState
+import com.gkm.rickmorty.data.response.episode.EpisodeUiState
 import com.gkm.rickmorty.navigate.RouteNav
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
 import com.gkm.rickmorty.ui.theme.RickMortyTheme
@@ -309,25 +310,25 @@ fun CharacterDetailTopBar(
 @Composable
 fun CharacterDetailBody(
     modifier: Modifier = Modifier,
-    detailCharacter: CharacterUiState
+    detailCharacter: CharacterUiState,
+    episodeDetail:EpisodeUiState
 ) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(8.dp)
-    ) {
-        item {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            ) {
-                Text(
-                    text = stringResource(id = R.string.detail_character),
-                    style = MaterialTheme.typography.bodyLarge
-                )
+    Column {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer),
+            elevation = CardDefaults.cardElevation(8.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.detail_character),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 20.dp, top = 10.dp),
+            )
+            Column(modifier = Modifier.padding(bottom = 10.dp)) {
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.specie),
                     text = detailCharacter.character.species
@@ -350,33 +351,48 @@ fun CharacterDetailBody(
                 )
             }
         }
-        items(detailCharacter.character.episode.size) {
-            Card(
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer),
+            elevation = CardDefaults.cardElevation(8.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.episode_list) + " (${detailCharacter.character.episode.size})",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
+                    .padding(start = 20.dp, top = 20.dp),
+            )
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(vertical = 10.dp)
             ) {
-                BoxCharacterDetail(
-                    textTittle = stringResource(id = R.string.episode),
-                    text = detailCharacter.character.episode[it]
-                )
+                items(detailCharacter.character.episode.size) {
+
+                    BoxCharacterDetail(
+                        textTittle = "",
+                        text = detailCharacter.character.episode[it]
+                    )
+                }
             }
         }
     }
-
 }
 
 @Composable
 fun BoxCharacterDetail(
     modifier: Modifier = Modifier,
     textTittle: String,
-    text: String
+    text: String,
 ) {
     Box(
         modifier = modifier
-            .padding(horizontal = 30.dp)
+            .padding(start = 40.dp)
             .fillMaxWidth()
     ) {
         Row(
@@ -385,7 +401,7 @@ fun BoxCharacterDetail(
             Text(
                 text = textTittle,
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Bold
             )
             Text(
                 text = text,

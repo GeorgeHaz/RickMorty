@@ -1,4 +1,4 @@
-package com.gkm.rickmorty.data.response.character
+package com.gkm.rickmorty.data.response
 
 enum class UiState {
     LOADING,

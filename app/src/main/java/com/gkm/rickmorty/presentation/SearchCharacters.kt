@@ -19,7 +19,7 @@ import com.gkm.rickmorty.R
 import com.gkm.rickmorty.components.CustomSearchBar
 import com.gkm.rickmorty.components.characters.CharacterListColumn
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
-import com.gkm.rickmorty.viewModel.SearchCharacterModel
+import com.gkm.rickmorty.viewModel.character.SearchCharacterModel
 
 @Composable
 fun SearchCharacters(

@@ -1,4 +1,4 @@
-package com.gkm.rickmorty.viewModel
+package com.gkm.rickmorty.viewModel.character
 
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagingData

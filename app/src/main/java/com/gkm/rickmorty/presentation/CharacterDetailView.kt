@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,10 +34,9 @@ import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.characters.CharacterDetailBody
 import com.gkm.rickmorty.components.characters.CharacterDetailTopBar
 import com.gkm.rickmorty.data.response.character.CharacterUiState
-import com.gkm.rickmorty.data.response.character.UiState
-import com.gkm.rickmorty.presentation.model.character.CharacterModel
-import com.gkm.rickmorty.ui.theme.RickMortyTheme
-import com.gkm.rickmorty.viewModel.DetailsCharacterViewModel
+import com.gkm.rickmorty.data.response.UiState
+import com.gkm.rickmorty.data.response.episode.EpisodeUiState
+import com.gkm.rickmorty.viewModel.character.DetailsCharacterViewModel
 
 @Composable
 fun CharacterDetailView(
@@ -49,6 +46,7 @@ fun CharacterDetailView(
     id: Int,
 ) {
     val detail = viewModel.uiState.value
+    val episodeDetail = viewModel.episodeUiState.value
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getCharacterDetail(id)
@@ -80,7 +78,8 @@ fun CharacterDetailView(
         BodyCharacterDetails(
             modifier = Modifier
                 .padding(it),
-            detail = detail
+            detail = detail,
+            episodeDetail = episodeDetail
         )
     }
 }
@@ -89,6 +88,7 @@ fun CharacterDetailView(
 fun BodyCharacterDetails(
     modifier: Modifier = Modifier,
     detail: CharacterUiState,
+    episodeDetail: EpisodeUiState
 ) {
     if (detail.uiState == UiState.SUCCESS) {
         Column(
@@ -99,7 +99,8 @@ fun BodyCharacterDetails(
                 detail = detail
             )
             CharacterDetail(
-                detail = detail
+                detail = detail,
+                episodeDetail = episodeDetail
             )
         }
     } else {
@@ -137,7 +138,7 @@ fun ImageCharacter(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(bottom = 20.dp)
             .height(sizeCharacter)
     )
     {
@@ -172,6 +173,7 @@ fun ImageCharacter(
 @Composable
 fun CharacterDetail(
     detail: CharacterUiState,
+    episodeDetail: EpisodeUiState,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -181,21 +183,8 @@ fun CharacterDetail(
             .background(MaterialTheme.colorScheme.secondaryContainer)
     ) {
         CharacterDetailBody(
-            detailCharacter = detail
-        )
-    }
-}
-
-@Preview
-@Composable
-fun PreviewCharacterDetailView() {
-    RickMortyTheme {
-        ImageCharacter(
-            detail = CharacterUiState(
-                character = CharacterModel(
-                    name = "Rick"
-                )
-            )
+            detailCharacter = detail,
+            episodeDetail = episodeDetail
         )
     }
 }

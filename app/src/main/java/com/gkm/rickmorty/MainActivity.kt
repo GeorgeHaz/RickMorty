@@ -10,9 +10,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.gkm.rickmorty.navigate.NavManager
 import com.gkm.rickmorty.ui.theme.RickMortyTheme
-import com.gkm.rickmorty.viewModel.CharacterViewModel
-import com.gkm.rickmorty.viewModel.DetailsCharacterViewModel
-import com.gkm.rickmorty.viewModel.SearchCharacterModel
+import com.gkm.rickmorty.viewModel.character.CharacterViewModel
+import com.gkm.rickmorty.viewModel.character.DetailsCharacterViewModel
+import com.gkm.rickmorty.viewModel.character.SearchCharacterModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val viewModel:CharacterViewModel by viewModels()
+        val viewModel: CharacterViewModel by viewModels()
         val viewModelSearch: SearchCharacterModel by viewModels()
         val viewModelDetails: DetailsCharacterViewModel by viewModels()
 

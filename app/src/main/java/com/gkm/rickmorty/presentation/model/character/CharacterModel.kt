@@ -5,7 +5,7 @@ data class CharacterModel(
     val name:String = "",
     val status:String = "",
     val species:String = "",
-    val type:String = "",
+    val type:String = "None",
     val gender:String = "",
     val originName:String = "",
     val originUrl:String = "",

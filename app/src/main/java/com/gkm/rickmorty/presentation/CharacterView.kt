@@ -22,7 +22,7 @@ import com.gkm.rickmorty.components.NotInternetLoader
 import com.gkm.rickmorty.components.characters.CharacterListColumn
 import com.gkm.rickmorty.navigate.RouteNav
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
-import com.gkm.rickmorty.viewModel.CharacterViewModel
+import com.gkm.rickmorty.viewModel.character.CharacterViewModel
 
 @Composable
 fun CharacterView(

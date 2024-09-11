@@ -13,9 +13,9 @@ import com.gkm.rickmorty.presentation.EpisodeView
 import com.gkm.rickmorty.presentation.HomeView
 import com.gkm.rickmorty.presentation.LocationView
 import com.gkm.rickmorty.presentation.SearchCharacters
-import com.gkm.rickmorty.viewModel.CharacterViewModel
-import com.gkm.rickmorty.viewModel.DetailsCharacterViewModel
-import com.gkm.rickmorty.viewModel.SearchCharacterModel
+import com.gkm.rickmorty.viewModel.character.CharacterViewModel
+import com.gkm.rickmorty.viewModel.character.DetailsCharacterViewModel
+import com.gkm.rickmorty.viewModel.character.SearchCharacterModel
 
 @Composable
 fun NavManager(

@@ -5,9 +5,9 @@ import com.gkm.rickmorty.data.response.character.CharacterResults
 import com.gkm.rickmorty.data.response.episode.EpisodeResponse
 import com.gkm.rickmorty.data.response.episode.EpisodeResult
 import com.gkm.rickmorty.data.response.location.LocationResponse
-import com.gkm.rickmorty.util.Constans.Companion.POINT_ONE
-import com.gkm.rickmorty.util.Constans.Companion.POINT_THREE
-import com.gkm.rickmorty.util.Constans.Companion.POINT_TWO
+import com.gkm.rickmorty.data.util.Constans.Companion.POINT_ONE
+import com.gkm.rickmorty.data.util.Constans.Companion.POINT_THREE
+import com.gkm.rickmorty.data.util.Constans.Companion.POINT_TWO
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -34,8 +34,13 @@ interface ApiRickMorty {
         @Query("page")page:Int,
     ):EpisodeResponse
 
-    @GET("$POINT_THREE/{episode}")
+    @GET("$POINT_THREE/{id_Episode}")
     suspend fun getEpisodeDetail(
-        @Path("episode")episode:String = ""
-    ): EpisodeResult
+        @Path("id_Episode")idEpisode:String
+    ):EpisodeResult
+
+    @GET("$POINT_THREE/{id_Episode}")
+    suspend fun getEpisodeOneDetail(
+        @Path("episode")idEpisode:String
+    ): List<EpisodeResult>
 }

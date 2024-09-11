@@ -1,4 +1,4 @@
-package com.gkm.rickmorty.util
+package com.gkm.rickmorty.data.util
 
 class Constans {
     companion object{

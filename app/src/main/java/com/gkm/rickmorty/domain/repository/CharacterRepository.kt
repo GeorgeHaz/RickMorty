@@ -6,8 +6,8 @@ import androidx.paging.PagingData
 import com.gkm.rickmorty.data.network.ApiRickMorty
 import com.gkm.rickmorty.data.pagging.RickAndMortyDataSource
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
-import com.gkm.rickmorty.util.Constans.Companion.MAX_ITEMS
-import com.gkm.rickmorty.util.Constans.Companion.PREFETCH_ITEMS
+import com.gkm.rickmorty.data.util.Constans.Companion.MAX_ITEMS
+import com.gkm.rickmorty.data.util.Constans.Companion.PREFETCH_ITEMS
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

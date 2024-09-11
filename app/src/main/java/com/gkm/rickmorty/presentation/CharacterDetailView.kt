@@ -18,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +38,7 @@ import com.gkm.rickmorty.components.characters.CharacterDetailTopBar
 import com.gkm.rickmorty.data.response.character.CharacterUiState
 import com.gkm.rickmorty.data.response.UiState
 import com.gkm.rickmorty.data.response.episode.EpisodeUiState
+import com.gkm.rickmorty.presentation.model.episode.EpisodeDto
 import com.gkm.rickmorty.viewModel.character.DetailsCharacterViewModel
 
 @Composable
@@ -46,7 +49,7 @@ fun CharacterDetailView(
     id: Int,
 ) {
     val detail = viewModel.uiState.value
-    val episodeDetail = viewModel.episodeUiState.value
+    val episodeDetail by viewModel.uiStateEpisode.collectAsState()
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getCharacterDetail(id)
@@ -88,7 +91,7 @@ fun CharacterDetailView(
 fun BodyCharacterDetails(
     modifier: Modifier = Modifier,
     detail: CharacterUiState,
-    episodeDetail: EpisodeUiState
+    episodeDetail: List<EpisodeDto>
 ) {
     if (detail.uiState == UiState.SUCCESS) {
         Column(
@@ -147,7 +150,7 @@ fun ImageCharacter(
             contentDescription = detail.character.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(200.dp)
+                .size(150.dp)
                 .clip(CircleShape)
                 .border(5.dp, colorLive, CircleShape)
                 .align(Alignment.Center)
@@ -173,7 +176,7 @@ fun ImageCharacter(
 @Composable
 fun CharacterDetail(
     detail: CharacterUiState,
-    episodeDetail: EpisodeUiState,
+    episodeDetail: List<EpisodeDto>,
     modifier: Modifier = Modifier
 ) {
     Box(

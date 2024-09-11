@@ -1,7 +1,7 @@
 package com.gkm.rickmorty.domain.di
 
 import com.gkm.rickmorty.data.network.ApiRickMorty
-import com.gkm.rickmorty.util.Constans.Companion.BASE_URL
+import com.gkm.rickmorty.data.util.Constans.Companion.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

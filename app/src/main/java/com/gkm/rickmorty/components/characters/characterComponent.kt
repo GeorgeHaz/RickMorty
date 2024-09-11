@@ -53,6 +53,7 @@ import com.gkm.rickmorty.data.response.character.CharacterUiState
 import com.gkm.rickmorty.data.response.episode.EpisodeUiState
 import com.gkm.rickmorty.navigate.RouteNav
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
+import com.gkm.rickmorty.presentation.model.episode.EpisodeDto
 import com.gkm.rickmorty.ui.theme.RickMortyTheme
 
 @Composable
@@ -311,7 +312,7 @@ fun CharacterDetailTopBar(
 fun CharacterDetailBody(
     modifier: Modifier = Modifier,
     detailCharacter: CharacterUiState,
-    episodeDetail:EpisodeUiState
+    episodeDetail:List<EpisodeDto>
 ) {
     Column {
         Card(
@@ -372,11 +373,11 @@ fun CharacterDetailBody(
                     .fillMaxSize()
                     .padding(vertical = 10.dp)
             ) {
-                items(detailCharacter.character.episode.size) {
+                items( episodeDetail.size) {
 
                     BoxCharacterDetail(
                         textTittle = "",
-                        text = detailCharacter.character.episode[it]
+                        text = episodeDetail[it].name
                     )
                 }
             }

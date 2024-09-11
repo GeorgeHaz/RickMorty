@@ -8,9 +8,11 @@ import javax.inject.Inject
 
 class EpisodeUseCase @Inject constructor(private val episodeRepository: EpisodeRepository) {
 
-    operator fun invoke(): Flow<PagingData<EpisodeDto>> {
+    suspend operator fun invoke(): Flow<PagingData<EpisodeDto>> {
         return episodeRepository.getAllEpisode()
     }
 
-    suspend operator fun invoke(episode:String) = episodeRepository.getEpisodeDetail(episode)
+    suspend operator fun invoke(idEpisode:List<String>): List<EpisodeDto>{
+        return episodeRepository.getEpisodeDetail(idEpisode)
+    }
 }

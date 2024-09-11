@@ -27,7 +27,7 @@ class EpisodeDetailViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(uiState = UiState.LOADING)
             try{
                 val episode = withContext(Dispatchers.IO){
-                    useCase.getEpisodeDetail(idEpisode)
+
                 }
             }catch (e:Exception) {
                 _uiState.value = EpisodeUiState(uiState = UiState.ERROR)

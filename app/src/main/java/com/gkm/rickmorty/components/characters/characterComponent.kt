@@ -46,14 +46,14 @@ import androidx.paging.compose.LazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.gkm.rickmorty.R
+import com.gkm.rickmorty.components.BoxCharacterDetail
 import com.gkm.rickmorty.components.GeneralLoader
-import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.NotFound
 import com.gkm.rickmorty.data.response.character.CharacterUiState
 import com.gkm.rickmorty.data.response.episode.EpisodeUiState
+import com.gkm.rickmorty.data.util.UiState
 import com.gkm.rickmorty.navigate.RouteNav
 import com.gkm.rickmorty.presentation.model.character.CharacterModel
-import com.gkm.rickmorty.presentation.model.episode.EpisodeDto
 import com.gkm.rickmorty.ui.theme.RickMortyTheme
 
 @Composable
@@ -190,7 +190,7 @@ fun MainImage(
                 )
         )
         if (isLoading) {
-            Loader()
+            GeneralLoader()
         }
     }
 }
@@ -312,7 +312,7 @@ fun CharacterDetailTopBar(
 fun CharacterDetailBody(
     modifier: Modifier = Modifier,
     detailCharacter: CharacterUiState,
-    episodeDetail:List<EpisodeDto>
+    episodeDetail: EpisodeUiState
 ) {
     Column {
         Card(
@@ -332,23 +332,28 @@ fun CharacterDetailBody(
             Column(modifier = Modifier.padding(bottom = 10.dp)) {
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.specie),
-                    text = detailCharacter.character.species
+                    text = detailCharacter.character.species,
+                    modifier = Modifier.padding(start = 40.dp)
                 )
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.type),
-                    text = detailCharacter.character.type
+                    text = detailCharacter.character.type,
+                    modifier = Modifier.padding(start = 40.dp)
                 )
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.gender),
-                    text = detailCharacter.character.gender
+                    text = detailCharacter.character.gender,
+                    modifier = Modifier.padding(start = 40.dp)
                 )
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.origin),
-                    text = detailCharacter.character.originName
+                    text = detailCharacter.character.originName,
+                    modifier = Modifier.padding(start = 40.dp)
                 )
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.location),
-                    text = detailCharacter.character.locationName
+                    text = detailCharacter.character.locationName,
+                    modifier = Modifier.padding(start = 40.dp)
                 )
             }
         }
@@ -373,42 +378,22 @@ fun CharacterDetailBody(
                     .fillMaxSize()
                     .padding(vertical = 10.dp)
             ) {
-                items( episodeDetail.size) {
-
+                items(episodeDetail.episode.size) {
                     BoxCharacterDetail(
-                        textTittle = "",
-                        text = episodeDetail[it].name
+                        orientationColumn = true,
+                        textTittle = episodeDetail.episode[it].name,
+                        text = episodeDetail.episode[it].episode
                     )
                 }
+                when{
+                    episodeDetail.uiState == UiState.LOADING -> {
+                        item {
+                            GeneralLoader(modifier = Modifier
+                                .fillParentMaxSize())
+                        }
+                    }
+                }
             }
-        }
-    }
-}
-
-@Composable
-fun BoxCharacterDetail(
-    modifier: Modifier = Modifier,
-    textTittle: String,
-    text: String,
-) {
-    Box(
-        modifier = modifier
-            .padding(start = 40.dp)
-            .fillMaxWidth()
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = textTittle,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(start = 10.dp)
-            )
         }
     }
 }

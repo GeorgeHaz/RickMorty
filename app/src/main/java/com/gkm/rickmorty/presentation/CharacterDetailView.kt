@@ -18,8 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,13 +30,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.gkm.rickmorty.components.Loader
+import com.gkm.rickmorty.components.GeneralLoader
 import com.gkm.rickmorty.components.characters.CharacterDetailBody
 import com.gkm.rickmorty.components.characters.CharacterDetailTopBar
 import com.gkm.rickmorty.data.response.character.CharacterUiState
-import com.gkm.rickmorty.data.response.UiState
 import com.gkm.rickmorty.data.response.episode.EpisodeUiState
-import com.gkm.rickmorty.presentation.model.episode.EpisodeDto
+import com.gkm.rickmorty.data.util.UiState
 import com.gkm.rickmorty.viewModel.character.DetailsCharacterViewModel
 
 @Composable
@@ -49,7 +46,7 @@ fun CharacterDetailView(
     id: Int,
 ) {
     val detail = viewModel.uiState.value
-    val episodeDetail by viewModel.uiStateEpisode.collectAsState()
+    val episodeDetail = viewModel.stateEpisode.value
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getCharacterDetail(id)
@@ -63,11 +60,13 @@ fun CharacterDetailView(
         modifier = modifier.fillMaxWidth(),
         topBar = {
             CharacterDetailTopBar(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 navController = navController,
                 text = {
                     Box(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -91,7 +90,7 @@ fun CharacterDetailView(
 fun BodyCharacterDetails(
     modifier: Modifier = Modifier,
     detail: CharacterUiState,
-    episodeDetail: List<EpisodeDto>
+    episodeDetail: EpisodeUiState
 ) {
     if (detail.uiState == UiState.SUCCESS) {
         Column(
@@ -112,7 +111,7 @@ fun BodyCharacterDetails(
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Loader()
+            GeneralLoader()
         }
     }
 
@@ -176,7 +175,7 @@ fun ImageCharacter(
 @Composable
 fun CharacterDetail(
     detail: CharacterUiState,
-    episodeDetail: List<EpisodeDto>,
+    episodeDetail: EpisodeUiState,
     modifier: Modifier = Modifier
 ) {
     Box(

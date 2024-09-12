@@ -31,8 +31,8 @@ val myTypography = Typography(
     displaySmall = TextStyle(
         fontFamily = Jost,
         fontWeight = FontWeight.Bold,
-        fontSize = 30.sp,
-        lineHeight = 32.sp
+        fontSize = 26.sp,
+        lineHeight = 28.sp
     ),
     bodyLarge = TextStyle(
         fontFamily = Jost,

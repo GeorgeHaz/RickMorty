@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class EpisodeRepository @Inject constructor(
-    private val apiRickMorty: ApiRickMorty
+    private val apiRickMorty: ApiRickMorty,
 ) {
 
     suspend fun getAllEpisode(name: String? = null): Flow<PagingData<EpisodeDto>> {
@@ -27,20 +27,17 @@ class EpisodeRepository @Inject constructor(
         }
     }
 
-    suspend fun getEpisodeOneDetail(episode: String): EpisodeDto {
+    suspend fun getEpisodeDetail(episode: String): EpisodeDto {
         return withContext(Dispatchers.IO) {
             apiRickMorty.getEpisodeDetail(episode).toPresentation()
         }
     }
 
-    suspend fun getEpisodeDetail(episode: List<String>): List<EpisodeDto> {
+    suspend fun getEpisodeDetail(episodeIds: List<String>): List<EpisodeDto> {
         return withContext(Dispatchers.IO) {
-            episode.map {url ->
-                val id = url.split("/").last()
-                apiRickMorty.getEpisodeDetail(id).toPresentation()
-            }
-
+            val episodeString = episodeIds.joinToString { "," }
+            apiRickMorty.getEpisodeOneDetail(episodeString).map { it.toPresentation() }
         }
-    }
 
+    }
 }

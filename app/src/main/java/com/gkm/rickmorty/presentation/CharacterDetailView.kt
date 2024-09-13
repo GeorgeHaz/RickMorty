@@ -33,7 +33,7 @@ import coil.request.ImageRequest
 import com.gkm.rickmorty.components.GeneralLoader
 import com.gkm.rickmorty.components.characters.CharacterDetailBody
 import com.gkm.rickmorty.components.characters.CharacterDetailTopBar
-import com.gkm.rickmorty.data.response.character.CharacterUiState
+import com.gkm.rickmorty.data.response.ResponseUiState
 import com.gkm.rickmorty.data.response.episode.EpisodeUiState
 import com.gkm.rickmorty.data.util.UiState
 import com.gkm.rickmorty.viewModel.character.DetailsCharacterViewModel
@@ -46,7 +46,7 @@ fun CharacterDetailView(
     id: Int,
 ) {
     val detail = viewModel.uiState.value
-    val episodeDetail = viewModel.stateEpisode.value
+    val episodeDetail = viewModel.episodeUiState.value
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getCharacterDetail(id)
@@ -81,7 +81,7 @@ fun CharacterDetailView(
             modifier = Modifier
                 .padding(it),
             detail = detail,
-            episodeDetail = episodeDetail
+            episodeDetail
         )
     }
 }
@@ -89,7 +89,7 @@ fun CharacterDetailView(
 @Composable
 fun BodyCharacterDetails(
     modifier: Modifier = Modifier,
-    detail: CharacterUiState,
+    detail: ResponseUiState,
     episodeDetail: EpisodeUiState
 ) {
     if (detail.uiState == UiState.SUCCESS) {
@@ -119,7 +119,7 @@ fun BodyCharacterDetails(
 
 @Composable
 fun ImageCharacter(
-    detail: CharacterUiState,
+    detail: ResponseUiState,
     modifier: Modifier = Modifier
 ) {
     val imageCharacter = rememberAsyncImagePainter(
@@ -174,9 +174,9 @@ fun ImageCharacter(
 
 @Composable
 fun CharacterDetail(
-    detail: CharacterUiState,
-    episodeDetail: EpisodeUiState,
-    modifier: Modifier = Modifier
+    detail: ResponseUiState,
+    modifier: Modifier = Modifier,
+    episodeDetail: EpisodeUiState
 ) {
     Box(
         modifier = modifier
@@ -185,7 +185,7 @@ fun CharacterDetail(
             .background(MaterialTheme.colorScheme.secondaryContainer)
     ) {
         CharacterDetailBody(
-            detailCharacter = detail,
+            detail = detail,
             episodeDetail = episodeDetail
         )
     }

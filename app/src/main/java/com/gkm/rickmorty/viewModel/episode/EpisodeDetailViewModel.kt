@@ -5,7 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gkm.rickmorty.data.response.character.CharacterUiState
+import com.gkm.rickmorty.data.response.ResponseUiState
 import com.gkm.rickmorty.data.util.UiState
 import com.gkm.rickmorty.domain.useCase.episode.EpisodeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,8 +18,8 @@ import javax.inject.Inject
 class EpisodeDetailViewModel @Inject constructor(
     private val useCase: EpisodeUseCase
 ): ViewModel() {
-    private val _uiState = mutableStateOf(CharacterUiState())
-    val uiState: State<CharacterUiState>
+    private val _uiState = mutableStateOf(ResponseUiState())
+    val uiState: State<ResponseUiState>
         get() = _uiState
 
     fun getEpisodeDetail(idEpisode:String){
@@ -30,7 +30,7 @@ class EpisodeDetailViewModel @Inject constructor(
 
                 }
             }catch (e:Exception) {
-                _uiState.value = CharacterUiState(uiState = UiState.ERROR)
+                _uiState.value = ResponseUiState(uiState = UiState.ERROR)
                 Log.e("Error_Episode", e.message.toString())
             }
         }

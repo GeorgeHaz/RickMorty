@@ -49,7 +49,7 @@ import com.gkm.rickmorty.R
 import com.gkm.rickmorty.components.BoxCharacterDetail
 import com.gkm.rickmorty.components.GeneralLoader
 import com.gkm.rickmorty.components.NotFound
-import com.gkm.rickmorty.data.response.character.CharacterUiState
+import com.gkm.rickmorty.data.response.ResponseUiState
 import com.gkm.rickmorty.data.response.episode.EpisodeUiState
 import com.gkm.rickmorty.data.util.UiState
 import com.gkm.rickmorty.navigate.RouteNav
@@ -311,7 +311,7 @@ fun CharacterDetailTopBar(
 @Composable
 fun CharacterDetailBody(
     modifier: Modifier = Modifier,
-    detailCharacter: CharacterUiState,
+    detail: ResponseUiState,
     episodeDetail: EpisodeUiState
 ) {
     Column {
@@ -332,27 +332,27 @@ fun CharacterDetailBody(
             Column(modifier = Modifier.padding(bottom = 10.dp)) {
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.specie),
-                    text = detailCharacter.character.species,
+                    text = detail.character.species,
                     modifier = Modifier.padding(start = 40.dp)
                 )
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.type),
-                    text = detailCharacter.character.type,
+                    text = detail.character.type,
                     modifier = Modifier.padding(start = 40.dp)
                 )
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.gender),
-                    text = detailCharacter.character.gender,
+                    text = detail.character.gender,
                     modifier = Modifier.padding(start = 40.dp)
                 )
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.origin),
-                    text = detailCharacter.character.originName,
+                    text = detail.character.originName,
                     modifier = Modifier.padding(start = 40.dp)
                 )
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.location),
-                    text = detailCharacter.character.locationName,
+                    text = detail.character.locationName,
                     modifier = Modifier.padding(start = 40.dp)
                 )
             }
@@ -367,7 +367,7 @@ fun CharacterDetailBody(
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.episode_list) + " (${detailCharacter.character.episode.size})",
+                text = stringResource(id = R.string.episode_list) + " (${detail.character.episode.size})",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier

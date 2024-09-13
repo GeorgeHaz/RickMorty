@@ -27,17 +27,22 @@ class EpisodeRepository @Inject constructor(
         }
     }
 
-    suspend fun getEpisodeDetail(episode: String): EpisodeDto {
+    suspend fun getEpisodeOneDetail(episode: String): EpisodeDto {
         return withContext(Dispatchers.IO) {
-            apiRickMorty.getEpisodeDetail(episode).toPresentation()
+            apiRickMorty.getEpisodeOneDetail(episode).toPresentation()
         }
     }
 
-    suspend fun getEpisodeDetail(episodeIds: List<String>): List<EpisodeDto> {
+    suspend fun getEpisodeDetail(episodeUrls: List<String>): List<EpisodeDto> {
         return withContext(Dispatchers.IO) {
-            val episodeString = episodeIds.joinToString { "," }
-            apiRickMorty.getEpisodeOneDetail(episodeString).map { it.toPresentation() }
+            val ids = episodeUrls.map { url -> url.split("/").last() }
+            if(ids.size == 1){
+                val episode = apiRickMorty.getEpisodeOneDetail(ids.first())
+                listOf(episode.toPresentation())
+            }else{
+                val episodes = apiRickMorty.getEpisodeDetail(ids)
+                episodes.map { it.toPresentation() }
+            }
         }
-
     }
 }

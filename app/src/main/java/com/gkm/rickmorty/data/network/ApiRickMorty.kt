@@ -35,12 +35,12 @@ interface ApiRickMorty {
     ):EpisodeResponse
 
     @GET("$POINT_THREE/{id_Episode}")
-    suspend fun getEpisodeDetail(
+    suspend fun getEpisodeOneDetail(
         @Path("id_Episode")idEpisode:String
     ):EpisodeResult
 
-    @GET("$POINT_THREE/{id_Episode}")
-    suspend fun getEpisodeOneDetail(
-        @Path("id_Episode")idEpisode:String
+    @GET("$POINT_THREE/{ids_Episode}")
+    suspend fun getEpisodeDetail(
+        @Path("ids_Episode")idsEpisode:List<String>
     ): List<EpisodeResult>
 }

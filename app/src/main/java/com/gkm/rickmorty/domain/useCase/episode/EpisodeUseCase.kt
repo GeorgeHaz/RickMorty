@@ -12,7 +12,7 @@ class EpisodeUseCase @Inject constructor(private val episodeRepository: EpisodeR
         return episodeRepository.getAllEpisode()
     }
 
-    suspend operator fun invoke(idEpisode:List<String>): List<EpisodeDto>{
-        return episodeRepository.getEpisodeDetail(idEpisode)
+    suspend operator fun invoke(episodeUrls:List<String>): List<EpisodeDto>{
+        return episodeRepository.getEpisodeDetail(episodeUrls)
     }
 }

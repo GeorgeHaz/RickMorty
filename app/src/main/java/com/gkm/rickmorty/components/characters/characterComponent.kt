@@ -47,7 +47,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.gkm.rickmorty.R
 import com.gkm.rickmorty.components.BoxCharacterDetail
-import com.gkm.rickmorty.components.GeneralLoader
+import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.NotFound
 import com.gkm.rickmorty.data.response.ResponseUiState
 import com.gkm.rickmorty.data.response.episode.EpisodeUiState
@@ -77,7 +77,13 @@ fun CharacterListColumn(
             when {
                 loadState.append is LoadState.Loading -> {
                     item {
-                        GeneralLoader(modifier = Modifier.fillParentMaxSize())
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Loader()
+                        }
                     }
                 }
 
@@ -140,7 +146,6 @@ fun CardCharacter(
                     .weight(1.5f)
             )
         }
-
     }
 }
 
@@ -190,7 +195,7 @@ fun MainImage(
                 )
         )
         if (isLoading) {
-            GeneralLoader()
+            Loader()
         }
     }
 }
@@ -305,7 +310,8 @@ fun CharacterDetailTopBar(
                     contentDescription = "back"
                 )
             }
-        })
+        }
+    )
 }
 
 @Composable
@@ -320,7 +326,8 @@ fun CharacterDetailBody(
                 .fillMaxWidth()
                 .padding(20.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer),
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
             Text(
@@ -337,7 +344,7 @@ fun CharacterDetailBody(
                 )
                 BoxCharacterDetail(
                     textTittle = stringResource(id = R.string.type),
-                    text = detail.character.type,
+                    text = detail.character.type.ifEmpty { stringResource(id = R.string.unknown) },
                     modifier = Modifier.padding(start = 40.dp)
                 )
                 BoxCharacterDetail(
@@ -363,7 +370,8 @@ fun CharacterDetailBody(
                 .fillMaxHeight()
                 .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer),
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
             Text(
@@ -385,11 +393,16 @@ fun CharacterDetailBody(
                         text = episodeDetail.episode[it].episode
                     )
                 }
-                when{
+                when {
                     episodeDetail.uiState == UiState.LOADING -> {
                         item {
-                            GeneralLoader(modifier = Modifier
-                                .fillParentMaxSize())
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Loader(modifier = Modifier.size(70.dp))
+                            }
                         }
                     }
                 }

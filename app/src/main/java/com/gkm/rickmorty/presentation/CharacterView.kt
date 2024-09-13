@@ -1,5 +1,6 @@
 package com.gkm.rickmorty.presentation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -8,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,7 +18,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.gkm.rickmorty.R
-import com.gkm.rickmorty.components.GeneralLoader
+import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.MainTopBar
 import com.gkm.rickmorty.components.NotInternetLoader
 import com.gkm.rickmorty.components.characters.CharacterListColumn
@@ -43,11 +45,14 @@ fun CharacterView(
         when {
             //start charge
             characterPage.loadState.refresh is LoadState.Loading && characterPage.itemCount == 0 -> {
-                GeneralLoader(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(it)
-                )
+                        .padding(it),
+                    contentAlignment = Alignment.Center
+                ){
+                    Loader()
+                }
             }
 
             characterPage.loadState.hasError -> {

@@ -24,18 +24,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.gkm.rickmorty.components.GeneralLoader
+import com.gkm.rickmorty.components.Loader
 import com.gkm.rickmorty.components.characters.CharacterDetailBody
 import com.gkm.rickmorty.components.characters.CharacterDetailTopBar
 import com.gkm.rickmorty.data.response.ResponseUiState
 import com.gkm.rickmorty.data.response.episode.EpisodeUiState
 import com.gkm.rickmorty.data.util.UiState
+import com.gkm.rickmorty.presentation.model.character.CharacterModel
+import com.gkm.rickmorty.ui.theme.RickMortyTheme
 import com.gkm.rickmorty.viewModel.character.DetailsCharacterViewModel
 
 @Composable
@@ -74,7 +77,8 @@ fun CharacterDetailView(
                             style = MaterialTheme.typography.displaySmall
                         )
                     }
-                })
+                }
+            )
         }
     ) {
         BodyCharacterDetails(
@@ -95,8 +99,7 @@ fun BodyCharacterDetails(
     if (detail.uiState == UiState.SUCCESS) {
         Column(
             modifier = modifier.fillMaxSize()
-        )
-        {
+        ){
             ImageCharacter(
                 detail = detail
             )
@@ -111,10 +114,9 @@ fun BodyCharacterDetails(
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            GeneralLoader()
+            Loader()
         }
     }
-
 }
 
 @Composable
@@ -133,17 +135,16 @@ fun ImageCharacter(
         else -> Color.Gray
     }
     val sizeCharacter = when (detail.character.status) {
-        "unknown" -> 200.dp
-        else -> 220.dp
+        "unknown" -> 150.dp
+        else -> 170.dp
     }
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 20.dp)
+            .padding(bottom = 8.dp)
             .height(sizeCharacter)
-    )
-    {
+    ){
         Image(
             painter = imageCharacter,
             contentDescription = detail.character.name,
@@ -169,7 +170,6 @@ fun ImageCharacter(
             )
         }
     }
-
 }
 
 @Composable
@@ -188,5 +188,13 @@ fun CharacterDetail(
             detail = detail,
             episodeDetail = episodeDetail
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CharacterDetailPreview() {
+    RickMortyTheme {
+        ImageCharacter(detail = ResponseUiState(character = CharacterModel(status = "Dead")))
     }
 }

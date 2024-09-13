@@ -34,7 +34,9 @@ class DetailsCharacterViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(uiState = UiState.LOADING)
             try {
-                val character = useCase.getCharacterDetail(idCharacter)
+                val character = withContext(Dispatchers.IO){
+                    useCase.getCharacterDetail(idCharacter)
+                }
                 _uiState.value = ResponseUiState(character = character, uiState = UiState.SUCCESS)
 
                 getEpisodeDetail(character.episode)
@@ -46,24 +48,14 @@ class DetailsCharacterViewModel @Inject constructor(
         }
     }
 
-    private fun extractEpisodeId(episodeUrl: String): String {
-        val episodeId = episodeUrl.split("/")
-        return episodeId.last()
-    }
-
     private fun getEpisodeDetail(episodeUrls: List<String>){
         viewModelScope.launch {
             try{
-                val episodeIds = episodeUrls.map {extractEpisodeId(it)}
-                val episode = withContext(Dispatchers.IO){
-                    episodeUseCase.invoke(episodeIds)
-                }
-                Log.e("Error_Epis",episodeIds.toString())
+                val episode = episodeUseCase.invoke(episodeUrls)
                 _episodeUiState.value = EpisodeUiState(episode = episode, uiState = UiState.SUCCESS)
             }catch (e:Exception){
                 _episodeUiState.value = EpisodeUiState(uiState = UiState.ERROR)
                 Log.e("Error_Episode",e.message.toString())
-
             }
         }
     }

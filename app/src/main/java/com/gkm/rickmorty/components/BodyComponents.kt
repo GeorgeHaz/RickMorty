@@ -146,18 +146,18 @@ fun MainTopBar(
 @Composable
 fun CustomSearchBar(
     modifier: Modifier = Modifier,
-    icon:ImageVector,
-    value: String="",
-    placeHolder:@Composable () -> Unit,
+    icon: ImageVector,
+    value: String = "",
+    placeHolder: @Composable () -> Unit,
     navigateUp: () -> Unit,
     onValueChange: (String) -> Unit,
-){
+) {
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
                 .fillMaxWidth()
-        ){
+        ) {
             IconButton(
                 onClick = { navigateUp() }
             ) {
@@ -168,7 +168,7 @@ fun CustomSearchBar(
             }
             TextField(
                 value = value,
-                onValueChange =onValueChange,
+                onValueChange = onValueChange,
                 placeholder = placeHolder,
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -176,25 +176,30 @@ fun CustomSearchBar(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent),
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done),
+                    imeAction = ImeAction.Done
+                ),
                 trailingIcon = {
-                    if(value.isNotEmpty()){
+                    if (value.isNotEmpty()) {
                         IconButton(
                             onClick = { onValueChange("") }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Clear,
-                                contentDescription = "")}
+                                contentDescription = ""
+                            )
+                        }
                     }
                 }
             )
         }
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.outline)
+            color = MaterialTheme.colorScheme.outline
+        )
     }
 
 }
@@ -259,18 +264,7 @@ fun Loader(
         color = MaterialTheme.colorScheme.primary,
         strokeWidth = 1.dp,
     )
-}
 
-@Composable
-fun GeneralLoader(
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.TopCenter
-    ) {
-        Loader()
-    }
 }
 
 @Composable
@@ -318,7 +312,7 @@ fun BoxCharacterDetail(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        if (orientationColumn){
+        if (orientationColumn) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -337,7 +331,7 @@ fun BoxCharacterDetail(
                     textAlign = TextAlign.Center
                 )
             }
-        }else{
+        } else {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
